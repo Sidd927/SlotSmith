@@ -1,0 +1,471 @@
+{
+ "summary": {
+  "cases": 10,
+  "accepted_windows": 11,
+  "accepted_proven_exact": 7,
+  "moved_total": 446,
+  "violations_max": 0,
+  "fallbacks": 0,
+  "max_revise_s": 56.1
+ },
+ "cases": [
+  {
+   "signals": 2000,
+   "seed": 1,
+   "moved": 53,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 13.8,
+   "windows": [
+    {
+     "window": [
+      1,
+      2
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 2.144149,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      1,
+      3
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 5.433844000000001,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      1,
+      4
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 5.54,
+     "proven_exact": true,
+     "moved_signals": 36,
+     "moved_signals_lower_bound": 36
+    }
+   ],
+   "accepted": 1,
+   "accepted_proven_exact": 1
+  },
+  {
+   "signals": 2000,
+   "seed": 2,
+   "moved": 11,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 0.0,
+   "windows": [],
+   "accepted": 0,
+   "accepted_proven_exact": 0
+  },
+  {
+   "signals": 2000,
+   "seed": 3,
+   "moved": 4,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 0.0,
+   "windows": [],
+   "accepted": 0,
+   "accepted_proven_exact": 0
+  },
+  {
+   "signals": 2000,
+   "seed": 4,
+   "moved": 50,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 30.8,
+   "windows": [
+    {
+     "window": [
+      4,
+      5
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.129099,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      4,
+      6
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.068426,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      3,
+      7
+     ],
+     "status": "FEASIBLE",
+     "wall_s": 10.06,
+     "proven_exact": false,
+     "moved_signals": 90,
+     "moved_signals_lower_bound": 2
+    }
+   ],
+   "accepted": 1,
+   "accepted_proven_exact": 0
+  },
+  {
+   "signals": 2000,
+   "seed": 5,
+   "moved": 66,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 31.0,
+   "windows": [
+    {
+     "window": [
+      4,
+      6
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.105540000000001,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      4,
+      7
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.008892000000001,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      3,
+      8
+     ],
+     "status": "FEASIBLE",
+     "wall_s": 10.01,
+     "proven_exact": false,
+     "moved_signals": 47,
+     "moved_signals_lower_bound": 9
+    }
+   ],
+   "accepted": 1,
+   "accepted_proven_exact": 0
+  },
+  {
+   "signals": 10000,
+   "seed": 1,
+   "moved": 50,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 15.5,
+   "windows": [
+    {
+     "window": [
+      24,
+      25
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 1.037256,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      24,
+      26
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 3.59892,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      23,
+      27
+     ],
+     "status": "FEASIBLE",
+     "wall_s": 10.16,
+     "proven_exact": false,
+     "moved_signals": 41,
+     "moved_signals_lower_bound": 12
+    }
+   ],
+   "accepted": 1,
+   "accepted_proven_exact": 0
+  },
+  {
+   "signals": 10000,
+   "seed": 2,
+   "moved": 9,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 0.2,
+   "windows": [],
+   "accepted": 0,
+   "accepted_proven_exact": 0
+  },
+  {
+   "signals": 10000,
+   "seed": 3,
+   "moved": 132,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 56.1,
+   "windows": [
+    {
+     "window": [
+      11,
+      12
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 0.47758100000000003,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      11,
+      13
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 1.167632,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      10,
+      14
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.17121,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      10,
+      15
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.064658000000001,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      9,
+      16
+     ],
+     "status": "FEASIBLE",
+     "wall_s": 10.02,
+     "proven_exact": false,
+     "moved_signals": 79,
+     "moved_signals_lower_bound": 2
+    },
+    {
+     "window": [
+      13,
+      14
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 0.25153600000000004,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      13,
+      15
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.006003,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      12,
+      16
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 2.7,
+     "proven_exact": true,
+     "moved_signals": 17,
+     "moved_signals_lower_bound": 17
+    },
+    {
+     "window": [
+      23,
+      24
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 1.281415,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      23,
+      25
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 7.5,
+     "proven_exact": true,
+     "moved_signals": 53,
+     "moved_signals_lower_bound": 53
+    }
+   ],
+   "accepted": 3,
+   "accepted_proven_exact": 2
+  },
+  {
+   "signals": 10000,
+   "seed": 4,
+   "moved": 44,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 36.3,
+   "windows": [
+    {
+     "window": [
+      2,
+      3
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 0.47,
+     "proven_exact": true,
+     "moved_signals": 14,
+     "moved_signals_lower_bound": 14
+    },
+    {
+     "window": [
+      10,
+      11
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 0.6959460000000001,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      10,
+      12
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 4.017867,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      9,
+      13
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 2.79,
+     "proven_exact": true,
+     "moved_signals": 8,
+     "moved_signals_lower_bound": 8
+    },
+    {
+     "window": [
+      11,
+      12
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.032892,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      11,
+      13
+     ],
+     "status": "UNKNOWN",
+     "wall_s": 10.053005,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      10,
+      14
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 6.64,
+     "proven_exact": true,
+     "moved_signals": 18,
+     "moved_signals_lower_bound": 18
+    }
+   ],
+   "accepted": 3,
+   "accepted_proven_exact": 3
+  },
+  {
+   "signals": 10000,
+   "seed": 5,
+   "moved": 27,
+   "violations": 0,
+   "fallback": false,
+   "revise_s": 2.8,
+   "windows": [
+    {
+     "window": [
+      5,
+      6
+     ],
+     "status": "INFEASIBLE",
+     "wall_s": 0.9403320000000001,
+     "proven_exact": null,
+     "moved_signals": null,
+     "moved_signals_lower_bound": null
+    },
+    {
+     "window": [
+      5,
+      7
+     ],
+     "status": "OPTIMAL",
+     "wall_s": 1.24,
+     "proven_exact": true,
+     "moved_signals": 6,
+     "moved_signals_lower_bound": 6
+    }
+   ],
+   "accepted": 1,
+   "accepted_proven_exact": 1
+  }
+ ]
+}

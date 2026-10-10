@@ -1,0 +1,5 @@
+single class standard sizes: {'cases': 342, 'ffd_worse': 0, 'examples': []}
+group A/N/B standard sizes: {'cases': 19682, 'allocator_worse': 0, 'exact_status': {'OPTIMAL': 19682}, 'max_excess': 0}
+sizes_4_8 {'cases': 48, 'ffd_worse': 0, 'examples': []}
+sizes_2_4_6_8_10 {'cases': 242, 'ffd_worse': 0, 'examples': []}
+wall_s 180.2

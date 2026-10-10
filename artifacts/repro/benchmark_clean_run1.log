@@ -1,0 +1,44 @@
+scale 500 1 0 0.17
+scale 500 2 0 0.17
+scale 500 3 0 0.17
+scale 2000 1 0 0.62
+scale 2000 2 0 0.58
+scale 2000 3 0 0.58
+scale 10000 1 0 3.0
+scale 10000 2 0 2.96
+scale 10000 3 0 3.01
+scale 20000 1 0 5.99
+scale 20000 2 0 6.06
+scale 20000 3 0 5.98
+tq {'seed': 101, 'injected': 27, 'detected': 27, 'coverage_pct': 100.0, 'violations': 0}
+tq {'seed': 102, 'injected': 27, 'detected': 27, 'coverage_pct': 100.0, 'violations': 0}
+tq {'seed': 103, 'injected': 27, 'detected': 27, 'coverage_pct': 100.0, 'violations': 0}
+rev {'signals': 2000, 'seed': 1, 'moved_incremental': 53, 'moved_from_scratch': 1287, 'added': 100, 'deleted': 60, 'modified_in_place': 26, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([1, 2], 'INFEASIBLE', 2.124917), ([1, 3], 'INFEASIBLE', 5.628764), ([1, 4], 'OPTIMAL', 5.1)], 'cpsat_accepted_optimal': 1, 'cpsat_accepted_feasible_only': 0, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 13.48}
+rev {'signals': 2000, 'seed': 2, 'moved_incremental': 11, 'moved_from_scratch': 883, 'added': 100, 'deleted': 60, 'modified_in_place': 25, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': False, 'fallback': False, 'cpsat_windows': [], 'cpsat_accepted_optimal': 0, 'cpsat_accepted_feasible_only': 0, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 0.05}
+rev {'signals': 2000, 'seed': 3, 'moved_incremental': 4, 'moved_from_scratch': 1728, 'added': 116, 'deleted': 60, 'modified_in_place': 30, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': False, 'fallback': False, 'cpsat_windows': [], 'cpsat_accepted_optimal': 0, 'cpsat_accepted_feasible_only': 0, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 0.05}
+rev {'signals': 2000, 'seed': 4, 'moved_incremental': 50, 'moved_from_scratch': 1157, 'added': 117, 'deleted': 60, 'modified_in_place': 32, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([4, 5], 'UNKNOWN', 10.367606), ([4, 6], 'UNKNOWN', 10.007555), ([3, 7], 'FEASIBLE', 10.03)], 'cpsat_accepted_optimal': 0, 'cpsat_accepted_feasible_only': 1, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 30.99}
+rev {'signals': 2000, 'seed': 5, 'moved_incremental': 66, 'moved_from_scratch': 1095, 'added': 101, 'deleted': 60, 'modified_in_place': 31, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([4, 6], 'UNKNOWN', 10.007498), ([4, 7], 'UNKNOWN', 10.010266000000001), ([3, 8], 'FEASIBLE', 10.01)], 'cpsat_accepted_optimal': 0, 'cpsat_accepted_feasible_only': 1, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 30.89}
+rev {'signals': 10000, 'seed': 1, 'moved_incremental': 50, 'moved_from_scratch': 9070, 'added': 507, 'deleted': 300, 'modified_in_place': 142, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([24, 25], 'INFEASIBLE', 1.0127410000000001), ([24, 26], 'INFEASIBLE', 3.5867590000000003), ([23, 27], 'FEASIBLE', 10.02)], 'cpsat_accepted_optimal': 0, 'cpsat_accepted_feasible_only': 1, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 15.42}
+rev {'signals': 10000, 'seed': 2, 'moved_incremental': 9, 'moved_from_scratch': 8535, 'added': 501, 'deleted': 300, 'modified_in_place': 154, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': False, 'fallback': False, 'cpsat_windows': [], 'cpsat_accepted_optimal': 0, 'cpsat_accepted_feasible_only': 0, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 0.28}
+rev {'signals': 10000, 'seed': 3, 'moved_incremental': 115, 'moved_from_scratch': 7252, 'added': 500, 'deleted': 300, 'modified_in_place': 137, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([11, 12], 'INFEASIBLE', 0.47400200000000003), ([11, 13], 'INFEASIBLE', 1.140489), ([10, 14], 'UNKNOWN', 10.127431000000001), ([10, 15], 'UNKNOWN', 10.013911), ([9, 16], 'FEASIBLE', 10.02), ([13, 14], 'INFEASIBLE', 0.254489), ([13, 15], 'INFEASIBLE', 9.006343000000001), ([12, 16], 'OPTIMAL', 3.04), ([23, 24], 'INFEASIBLE', 1.2084780000000002), ([23, 25], 'OPTIMAL', 6.16)], 'cpsat_accepted_optimal': 2, 'cpsat_accepted_feasible_only': 1, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 53.87}
+rev {'signals': 10000, 'seed': 4, 'moved_incremental': 44, 'moved_from_scratch': 9166, 'added': 504, 'deleted': 300, 'modified_in_place': 146, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([2, 3], 'OPTIMAL', 0.48), ([10, 11], 'INFEASIBLE', 0.7139420000000001), ([10, 12], 'INFEASIBLE', 3.389206), ([9, 13], 'OPTIMAL', 2.63), ([11, 12], 'UNKNOWN', 10.009468), ([11, 13], 'UNKNOWN', 10.009629), ([10, 14], 'OPTIMAL', 4.92)], 'cpsat_accepted_optimal': 3, 'cpsat_accepted_feasible_only': 0, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 33.77}
+rev {'signals': 10000, 'seed': 5, 'moved_incremental': 27, 'moved_from_scratch': 9632, 'added': 500, 'deleted': 300, 'modified_in_place': 144, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'cpsat_windows': [([5, 6], 'INFEASIBLE', 0.897005), ([5, 7], 'OPTIMAL', 1.2)], 'cpsat_accepted_optimal': 1, 'cpsat_accepted_feasible_only': 0, 'tqs': 0, 'capacity_unplaced': 0, 'revise_s': 2.65}
+{
+ "max_violations": 0,
+ "min_coverage_pct": 100.0,
+ "baseplates_over_lb_max": 2,
+ "baseplates_over_exact_max": 0,
+ "wall_20k_median_s": 5.99,
+ "allocate_20k_median_s": 0.012,
+ "tq_detected": 81,
+ "tq_injected": 81,
+ "rev_moved_incremental_total": 429,
+ "rev_moved_scratch_total": 49805,
+ "rev_violations_max": 0,
+ "rev_cases": 10,
+ "rev_cpsat_cases": 7,
+ "rev_fallback_cases": 0,
+ "rev_cpsat_windows_accepted_optimal": 7,
+ "rev_cpsat_windows_accepted_feasible_only": 4,
+ "rev_time_max_s": 53.87
+}

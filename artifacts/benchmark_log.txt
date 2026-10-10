@@ -1,0 +1,41 @@
+scale 500 1 0 0.17
+scale 500 2 0 0.16
+scale 500 3 0 0.17
+scale 2000 1 0 0.59
+scale 2000 2 0 0.58
+scale 2000 3 0 0.58
+scale 10000 1 0 2.93
+scale 10000 2 0 2.9
+scale 10000 3 0 2.98
+scale 20000 1 0 5.93
+scale 20000 2 0 5.94
+scale 20000 3 0 5.89
+tq {'seed': 101, 'injected': 27, 'detected': 27, 'coverage_pct': 100.0, 'violations': 0}
+tq {'seed': 102, 'injected': 27, 'detected': 27, 'coverage_pct': 100.0, 'violations': 0}
+tq {'seed': 103, 'injected': 27, 'detected': 27, 'coverage_pct': 100.0, 'violations': 0}
+rev {'signals': 2000, 'seed': 1, 'moved_incremental': 53, 'moved_from_scratch': 1287, 'added': 100, 'deleted': 60, 'modified_in_place': 26, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 13.05}
+rev {'signals': 2000, 'seed': 2, 'moved_incremental': 11, 'moved_from_scratch': 883, 'added': 100, 'deleted': 60, 'modified_in_place': 25, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': False, 'fallback': False, 'revise_s': 0.05}
+rev {'signals': 2000, 'seed': 3, 'moved_incremental': 4, 'moved_from_scratch': 1728, 'added': 116, 'deleted': 60, 'modified_in_place': 30, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': False, 'fallback': False, 'revise_s': 0.04}
+rev {'signals': 2000, 'seed': 4, 'moved_incremental': 50, 'moved_from_scratch': 1157, 'added': 117, 'deleted': 60, 'modified_in_place': 32, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 30.73}
+rev {'signals': 2000, 'seed': 5, 'moved_incremental': 66, 'moved_from_scratch': 1095, 'added': 101, 'deleted': 60, 'modified_in_place': 31, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 31.24}
+rev {'signals': 10000, 'seed': 1, 'moved_incremental': 50, 'moved_from_scratch': 9070, 'added': 507, 'deleted': 300, 'modified_in_place': 142, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 15.34}
+rev {'signals': 10000, 'seed': 2, 'moved_incremental': 9, 'moved_from_scratch': 8535, 'added': 501, 'deleted': 300, 'modified_in_place': 154, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': False, 'fallback': False, 'revise_s': 0.26}
+rev {'signals': 10000, 'seed': 3, 'moved_incremental': 156, 'moved_from_scratch': 7252, 'added': 500, 'deleted': 300, 'modified_in_place': 136, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 55.14}
+rev {'signals': 10000, 'seed': 4, 'moved_incremental': 44, 'moved_from_scratch': 9166, 'added': 504, 'deleted': 300, 'modified_in_place': 146, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 39.27}
+rev {'signals': 10000, 'seed': 5, 'moved_incremental': 27, 'moved_from_scratch': 9632, 'added': 500, 'deleted': 300, 'modified_in_place': 144, 'violations_incremental': 0, 'violations_scratch': 0, 'cpsat_used': True, 'fallback': False, 'revise_s': 2.67}
+{
+ "max_violations": 0,
+ "min_coverage_pct": 100.0,
+ "baseplates_over_lb_max": 2,
+ "wall_20k_median_s": 5.93,
+ "allocate_20k_median_s": 0.01,
+ "tq_detected": 81,
+ "tq_injected": 81,
+ "rev_moved_incremental_total": 470,
+ "rev_moved_scratch_total": 49805,
+ "rev_violations_max": 0,
+ "rev_cases": 10,
+ "rev_cpsat_cases": 7,
+ "rev_fallback_cases": 0,
+ "rev_time_max_s": 55.14
+}
