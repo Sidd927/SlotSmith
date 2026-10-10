@@ -1,0 +1,11 @@
+FAIL  a. no tag both allocated and not-allocated  dups=['A3', 'A4', 'A1']
+PASS  a. capacity failure raises traceable TQ  capacity TQs=[('TQ-0001', ['CA']), ('TQ-0002', ['C24'])]
+PASS  a. verifier still 0 violations  {}
+PASS  a. unplaced rows reference a real TQ id  {'TQ-0001', 'TQ-0002'}
+PASS  b. 120-pair cable -> capacity TQ, 100% coverage  cov=100.0 tq=['D-3', 'C-1']
+PASS  c. 16- and 36-pair cables allocate with 0 violations  baseplates used=5 (16-pair uses 2 bp, 4 slots unusable by others)
+FAIL  d. allow_cable_straddle is honoured by the allocator  allocator never straddles (parameter only relaxes the verifier) -> document, conservative
+PASS  e. revision with segregation_level=cabinet: 0 violations  A viol=0 B viol=0 moved=21 fallback=False fails=[]
+PASS  e. revision with group_isolation_level=cabinet: 0 violations  A viol=0 B viol=0 moved=21 fallback=False fails=[]
+PASS  f. revision needing a new cabinet succeeds with 0 violations  moved=0 cpsat=[] fallback=False
+PASS  f. revision: any unplaced signal has a TQ object  0 unplaced

@@ -1,0 +1,24 @@
+[project]
+name = "slotsmith"
+version = "0.1.0"
+description = "Rule-driven, independently verified DeltaV Electronic Marshalling I/O allocation (hackathon prototype)"
+requires-python = ">=3.11"
+dependencies = ["ortools>=9.10", "openpyxl>=3.1", "pandas>=2.2", "pydantic>=2.6"]
+
+[project.optional-dependencies]
+dev = ["pytest", "hypothesis"]
+ui = ["streamlit"]
+
+[project.scripts]
+slotsmith = "slotsmith.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

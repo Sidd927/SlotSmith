@@ -1,0 +1,24 @@
+# Organiser-provided files: hackathon use only, do not share/commit
+reference/official/
+reference/team/
+data/official/
+# Local env / build
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+artifacts/tmp/
+.DS_Store
+.env
+*.key
+# generated benchmark workbooks / browser tool output
+artifacts/bench/
+.playwright-mcp/
+deliverables/round1/build/bg/
+# third-party copyrighted documents (re-download via URLs in docs/source_register.md) and private notes
+reference/emerson/
+reference/third_party/
+reference/prior_research_PS_selection_strategy.pdf
+# Generated Python package metadata
+*.egg-info/

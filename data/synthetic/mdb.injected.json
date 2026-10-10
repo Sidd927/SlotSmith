@@ -1,0 +1,32 @@
+[
+ {
+  "kind": "duplicate_tag",
+  "tag": "10-LT-1595",
+  "cable": "CBL-0071"
+ },
+ {
+  "kind": "missing_io",
+  "tag": "10-LS-1486",
+  "cable": "CBL-0055"
+ },
+ {
+  "kind": "unknown_io",
+  "tag": "10-LT-2128A",
+  "cable": "CBL-0130"
+ },
+ {
+  "kind": "pair_over_size",
+  "tag": "10-LT-2523A",
+  "cable": "CBL-0180"
+ },
+ {
+  "kind": "duplicate_pair",
+  "tag": "10-PV-1633",
+  "cable": "CBL-0073"
+ },
+ {
+  "kind": "mixed_ab_cable",
+  "tag": "10-HN-1337",
+  "cable": "CBL-0039"
+ }
+]
