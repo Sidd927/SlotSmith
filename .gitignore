@@ -22,3 +22,8 @@ reference/third_party/
 reference/prior_research_PS_selection_strategy.pdf
 # Generated Python package metadata
 *.egg-info/
+# Local Streamlit credentials
+.streamlit/credentials.toml
+
+# Local Claude Code configuration
+.claude/
