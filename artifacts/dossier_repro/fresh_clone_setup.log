@@ -1,0 +1,82 @@
++/tmp/ss/fresh/run.sh:3> cd /tmp/ss/fresh
++/tmp/ss/fresh/run.sh:4> git clone -q /Users/siddhant_patil/Projects/SlotSmith/.claude/worktrees/slotsmith-vit-apex-presentation-e9e650 SlotSmith
++/tmp/ss/fresh/run.sh:5> cd SlotSmith
++/tmp/ss/fresh/run.sh:6> git log --oneline -1
+47a26b6 Ignore local development configuration
++/tmp/ss/fresh/run.sh:7> /opt/homebrew/bin/python3.12 -m venv .venv
++/tmp/ss/fresh/run.sh:8> .venv/bin/pip install -q --upgrade pip
++/tmp/ss/fresh/run.sh:9> /usr/bin/time -p .venv/bin/pip install -q -r requirements.lock.txt
+real 24.15
+user 6.60
+sys 1.34
++/tmp/ss/fresh/run.sh:10> .venv/bin/pip install -q --no-deps -e .
++/tmp/ss/fresh/run.sh:11> .venv/bin/python -m pytest -q
++/tmp/ss/fresh/run.sh:11> tail -4
+........................................................................ [ 59%]
+..................................................                       [100%]
+122 passed in 65.43s (0:01:05)
++/tmp/ss/fresh/run.sh:12> .venv/bin/slotsmith generate --signals 600 --seed 3 --errors 6 --out /tmp/ss/fresh/demo_mdb.xlsx --rev-b /tmp/ss/fresh/demo_revb.xlsx
+wrote /tmp/ss/fresh/demo_mdb.xlsx (614 rows, synthetic)
++/tmp/ss/fresh/run.sh:13> .venv/bin/slotsmith allocate /tmp/ss/fresh/demo_mdb.xlsx --out /tmp/ss/fresh/alloc.xlsx
+{
+ "mdb_rows": 614,
+ "signals_allocated": 602,
+ "signals_with_tq": 12,
+ "coverage_pct": 100.0,
+ "tqs": 6,
+ "blocking_tqs": 6,
+ "cabinets": 3,
+ "ciocs": 9,
+ "baseplates": 62,
+ "lb_baseplates": 62,
+ "lb_cabinets": 3,
+ "violations": 0,
+ "ingest_s": 0.02,
+ "validate_s": 0.004,
+ "allocate_s": 0.0,
+ "export_s": 0.051,
+ "verify_s": 0.115
+}
++/tmp/ss/fresh/run.sh:13> echo 'exit=0'
+exit=0
++/tmp/ss/fresh/run.sh:14> .venv/bin/slotsmith verify /tmp/ss/fresh/alloc.xlsx --mdb /tmp/ss/fresh/demo_mdb.xlsx
+PASS Q-1          0  Every MDB signal is allocated or has a TQ  
+PASS D-2          0  One signal per CHARM slot (no slot used twice)  
+PASS C-1          0  Capacity: 12 CHARMs/baseplate, 8 baseplates/CIOC, 4 CIOCs/cabinet  
+PASS K-1          0  Each cable lands complete, side by side, in pair order  
+PASS S-1          0  A and B signals never share a CIOC  
+PASS G-1          0  IO groups isolated and kept in contiguous cabinets  
+PASS P-1          0  Spare room: required empty baseplates in every cabinet  
+PASS H-1..6       0  Correct CHARM and terminal block per signal type  
+PASS N-1..6       0  Names follow the user-defined patterns  
+PASS C-2          0  Each CIOC has one controller; controller CIOC limit respected  
+PASS M-1          0  Allocated rows match the MDB (IO type, cable, pair, group, seg)  
++/tmp/ss/fresh/run.sh:14> echo 'exit=0'
+exit=0
++/tmp/ss/fresh/run.sh:15> .venv/bin/slotsmith revise --prev /tmp/ss/fresh/alloc.xlsx --mdb /tmp/ss/fresh/demo_revb.xlsx --out /tmp/ss/fresh/alloc_revB.xlsx
+{
+ "moved": 0,
+ "added": 36,
+ "deleted": 18,
+ "modified_in_place": 9,
+ "unchanged": 575,
+ "fallback_full_reallocation": false,
+ "unplaced_after_repair": [],
+ "cpsat_repairs": [],
+ "cpsat_accepted_optimal": 0,
+ "cpsat_accepted_feasible_only": 0,
+ "capacity_unplaced": [],
+ "tqs": 6,
+ "cabinets": 3,
+ "violations": 0,
+ "cabinets_hit": 3
+}
++/tmp/ss/fresh/run.sh:15> echo 'exit=0'
+exit=0
++/tmp/ss/fresh/run.sh:16> .venv/bin/streamlit run app/streamlit_app.py --server.port 8630 --server.headless true --browser.gatherUsageStats false
++/tmp/ss/fresh/run.sh:17> sleep 12
++/tmp/ss/fresh/run.sh:17> curl -s -o /dev/null -w 'streamlit http=%{http_code}\n' http://localhost:8630/
+streamlit http=200
++/tmp/ss/fresh/run.sh:17> pkill -f 'server.port 8630'
++/tmp/ss/fresh/run.sh:18> echo FINISHED
+FINISHED

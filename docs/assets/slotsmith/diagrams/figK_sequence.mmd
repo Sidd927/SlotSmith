@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant UI as Streamlit app (app/)
+    participant S as core/session.py
+    participant E as Engine (src/slotsmith)
+    U->>UI: Open landing page, choose "Run the synthetic demo" or upload on Input
+    UI->>S: load_synthetic() or load_uploads()
+    S->>E: generate()/make_revision() or read_mdb() (via safe_read_mdb)
+    E-->>S: MDB rows + column mapping, or a readable error (previous data kept)
+    U->>UI: Open Review
+    UI->>E: validate() through compute_preflight_audit()
+    E-->>UI: cable blocks and TQs (findings)
+    U->>UI: Edit rule parameters (optional), press Allocate
+    UI->>S: run_allocation()
+    S->>E: pipeline.run(paths, rules, out.xlsx)
+    E->>E: validate, allocate, build rows, write workbook
+    E->>E: load_allocation(out.xlsx), verify(), rewrite workbook with Rule Check
+    E-->>S: RunResult (rows, TQs, 11-row check, timings)
+    S-->>UI: results page (verifier banner, tiles, TQs, cabinets)
+    U->>UI: Inspect Results and Cabinets
+    U->>UI: Revise: choose Rev B, press Compare and re-allocate
+    UI->>S: run_revision()
+    S->>E: revise(Rev A rows, Rev B rows, rules)
+    E-->>S: Rev B rows, impact list, solver log
+    S->>E: write_workbook(), load_allocation(), verify(), rewrite with Rule Check
+    S-->>UI: impact tiles, solver summary, Rev B download
+    U->>UI: Deliverables: download workbooks and rule set
+    U->>UI: Start over (confirm): clears data and results, keeps rules

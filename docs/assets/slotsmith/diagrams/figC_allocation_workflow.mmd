@@ -1,0 +1,17 @@
+flowchart TD
+    A["1 Read workbook(s)<br/>find header row, auto-map columns,<br/>keep file:sheet:row"] --> B["2 Validate rows and cables<br/>duplicate tag / pair, missing fields, unknown I/O type,<br/>pair beyond cable size, mixed A/B or group"]
+    B -->|"each problem"| TQ[["Technical query (TQ)<br/>rule ID + source rows + suggested action<br/>affected rows are held, not placed"]]
+    B --> C["3 Build cable blocks<br/>one block = whole cable (size 24, 12, 6 or 2 slots)<br/>wired spares included"]
+    C --> D["4 Pack per group and side<br/>first-fit-decreasing into 12-slot baseplates<br/>side order A, neutral, B"]
+    D --> E["5 Lay baseplate units into CIOCs and cabinets<br/>group isolation, A/B separation, spare reserve,<br/>capacity 12 · 8 · 4"]
+    E -->|"unit cannot fit even an empty cabinet"| CAP[["Capacity TQ<br/>cable not allocated"]]
+    E --> F["6 Build rows and names<br/>CHARM and terminal block from rule table,<br/>names from patterns"]
+    F --> G["7 Write workbook (without Rule Check)"]
+    G --> H["8 Re-read workbook and verify<br/>11 check families"]
+    H --> I["9 Rewrite workbook with Rule Check sheet"]
+    classDef step fill:#e8f4ea,stroke:#2f7d4a,color:#0f2a18;
+    classDef chk fill:#fff4d6,stroke:#b07a00,color:#3a2900;
+    classDef tq fill:#fde8e8,stroke:#b03030,color:#3a0f0f;
+    class A,B,C,D,E,F,G,I step;
+    class H chk;
+    class TQ,CAP tq;

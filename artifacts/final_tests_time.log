@@ -1,0 +1,1 @@
+.venv/bin/python -m pytest -q --no-header -p no:cacheprovider tests/ >  2>&1  190.99s user 1.64s system 539% cpu 35.707 total

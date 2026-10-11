@@ -27,3 +27,12 @@ reference/prior_research_PS_selection_strategy.pdf
 
 # Local Claude Code configuration
 .claude/
+
+# Local secrets and development environment
+.streamlit/credentials.toml
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/

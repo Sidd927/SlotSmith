@@ -1,0 +1,210 @@
+{
+ "batches": [
+  {
+   "label": "batch 1 (10 Oct, clean run 1)",
+   "file": "artifacts/benchmarks.json",
+   "generated_at": "2026-10-10 12:25:40 IST",
+   "wall_20k_median_s": 5.99,
+   "rev_moved_total": 429,
+   "rev_moved_scratch_total": 49805,
+   "cpsat_windows_status_OPTIMAL": 7,
+   "cpsat_windows_status_FEASIBLE_only": 4,
+   "max_violations": 0,
+   "tq": "81/81",
+   "baseplates_over_exact_max": 0,
+   "rev_time_max_s": 53.87
+  },
+  {
+   "label": "batch 2 (10 Oct, clean run 2)",
+   "file": "artifacts/repro/benchmarks_clean_run2.json",
+   "generated_at": "2026-10-10 12:29:33 IST",
+   "wall_20k_median_s": 6.03,
+   "rev_moved_total": 470,
+   "rev_moved_scratch_total": 49805,
+   "cpsat_windows_status_OPTIMAL": 7,
+   "cpsat_windows_status_FEASIBLE_only": 4,
+   "max_violations": 0,
+   "tq": "81/81",
+   "baseplates_over_exact_max": 0,
+   "rev_time_max_s": 58.05
+  },
+  {
+   "label": "batch 3 (11 Oct, re-run with other load)",
+   "file": "artifacts/pitch_deck_repro/benchmarks_rerun.json",
+   "generated_at": "2026-10-11 22:35:56 IST",
+   "wall_20k_median_s": 6.31,
+   "rev_moved_total": 575,
+   "rev_moved_scratch_total": 49805,
+   "cpsat_windows_status_OPTIMAL": 7,
+   "cpsat_windows_status_FEASIBLE_only": 4,
+   "max_violations": 0,
+   "tq": "81/81",
+   "baseplates_over_exact_max": 0,
+   "rev_time_max_s": 54.59
+  },
+  {
+   "label": "batch 4 (11 Oct, light background load)",
+   "file": "artifacts/dossier_repro/benchmarks_dossier.json",
+   "generated_at": "2026-10-11 23:56:44 IST",
+   "wall_20k_median_s": 5.96,
+   "rev_moved_total": 467,
+   "rev_moved_scratch_total": 49805,
+   "cpsat_windows_status_OPTIMAL": 6,
+   "cpsat_windows_status_FEASIBLE_only": 5,
+   "max_violations": 0,
+   "tq": "81/81",
+   "baseplates_over_exact_max": 0,
+   "rev_time_max_s": 56.06
+  }
+ ],
+ "runtime_median_by_size_s": {
+  "500": 0.17,
+  "2000": 0.585,
+  "10000": 2.95,
+  "20000": 6.035
+ },
+ "revision_total_moved_per_run_incl_status_audits": [
+  429,
+  470,
+  575,
+  467,
+  446,
+  470
+ ],
+ "strict_proven_exact_windows_status_audits": [
+  "7/11",
+  "6/11"
+ ],
+ "per_case": [
+  {
+   "signals": 2000,
+   "seed": 1,
+   "moved": [
+    53,
+    53,
+    53,
+    53,
+    53,
+    53
+   ],
+   "scratch": 1287
+  },
+  {
+   "signals": 2000,
+   "seed": 2,
+   "moved": [
+    11,
+    11,
+    11,
+    11,
+    11,
+    11
+   ],
+   "scratch": 883
+  },
+  {
+   "signals": 2000,
+   "seed": 3,
+   "moved": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "scratch": 1728
+  },
+  {
+   "signals": 2000,
+   "seed": 4,
+   "moved": [
+    50,
+    50,
+    218,
+    50,
+    50,
+    50
+   ],
+   "scratch": 1157
+  },
+  {
+   "signals": 2000,
+   "seed": 5,
+   "moved": [
+    66,
+    66,
+    66,
+    66,
+    66,
+    66
+   ],
+   "scratch": 1095
+  },
+  {
+   "signals": 10000,
+   "seed": 1,
+   "moved": [
+    50,
+    50,
+    50,
+    50,
+    50,
+    50
+   ],
+   "scratch": 9070
+  },
+  {
+   "signals": 10000,
+   "seed": 2,
+   "moved": [
+    9,
+    9,
+    9,
+    9,
+    9,
+    9
+   ],
+   "scratch": 8535
+  },
+  {
+   "signals": 10000,
+   "seed": 3,
+   "moved": [
+    115,
+    156,
+    93,
+    153,
+    132,
+    156
+   ],
+   "scratch": 7252
+  },
+  {
+   "signals": 10000,
+   "seed": 4,
+   "moved": [
+    44,
+    44,
+    44,
+    44,
+    44,
+    44
+   ],
+   "scratch": 9166
+  },
+  {
+   "signals": 10000,
+   "seed": 5,
+   "moved": [
+    27,
+    27,
+    27,
+    27,
+    27,
+    27
+   ],
+   "scratch": 9632
+  }
+ ]
+}

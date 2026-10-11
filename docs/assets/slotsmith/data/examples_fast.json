@@ -1,0 +1,400 @@
+{
+ "ab_interaction": {
+  "with_A_B_sides": {
+   "metrics": {
+    "signals_allocated": 12,
+    "ciocs": 2,
+    "baseplates": 2,
+    "violations": 0
+   },
+   "cables": {
+    "CBL-A": [
+     [
+      "AR1CIOC100001",
+      "001-CBP-1"
+     ]
+    ],
+    "CBL-B": [
+     [
+      "AR1CIOC100002",
+      "002-CBP-1"
+     ]
+    ]
+   },
+   "slots": {
+    "CBL-A": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "CBL-B": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  "without_sides": {
+   "metrics": {
+    "signals_allocated": 12,
+    "ciocs": 1,
+    "baseplates": 1,
+    "violations": 0
+   },
+   "cables": {
+    "CBL-A": [
+     [
+      "AR1CIOC100001",
+      "001-CBP-1"
+     ]
+    ],
+    "CBL-B": [
+     [
+      "AR1CIOC100001",
+      "001-CBP-1"
+     ]
+    ]
+   },
+   "slots": {
+    "CBL-A": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "CBL-B": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   }
+  }
+ },
+ "verifier_mutations": {
+  "dataset": "SYNTHETIC 600 signals, seed 9",
+  "clean_violations_per_rule": {
+   "Q-1": 0,
+   "D-2": 0,
+   "C-1": 0,
+   "K-1": 0,
+   "S-1": 0,
+   "G-1": 0,
+   "P-1": 0,
+   "H-1..6": 0,
+   "N-1..6": 0,
+   "C-2": 0,
+   "M-1": 0
+  },
+  "mutations": {
+   "double_booked_slot (second signal copied onto the first signal's slot)": [
+    {
+     "rule": "D-2",
+     "violations": 1,
+     "example": "AR1CIOC100001 BP1 slot 1: 10-XV-1059A and 10-TT-1060A"
+    },
+    {
+     "rule": "K-1",
+     "violations": 1,
+     "example": "CBL-0013: pairs are not side by side in pair order"
+    }
+   ],
+   "wrong_terminal_block (fused DO block changed to Standard)": [
+    {
+     "rule": "H-1..6",
+     "violations": 1,
+     "example": "10-XV-1059A: DO 24 V DC Isolated CHARM / Standard (expected ('DO 24 V DC Isolated CHARM', 'Fused-injected-power'))"
+    }
+   ],
+   "A_and_B_in_one_CIOC (a B signal moved to an A baseplate name)": [
+    {
+     "rule": "D-2",
+     "violations": 1,
+     "example": "AR1CIOC100001 BP1 slot 1: 10-XV-1059A and 10-XV-1059B"
+    },
+    {
+     "rule": "C-1",
+     "violations": 2,
+     "example": "AR1CIOC100001 appears in two cabinets | cabinet #2: 5 CIOCs"
+    },
+    {
+     "rule": "K-1",
+     "violations": 1,
+     "example": "CBL-0014: spread over several CIOCs"
+    },
+    {
+     "rule": "S-1",
+     "violations": 1,
+     "example": "AR1CIOC100001: holds A and B signals"
+    }
+   ],
+   "missing_signal (one allocated signal row deleted)": [
+    {
+     "rule": "Q-1",
+     "violations": 1,
+     "example": "10-XV-1059A: missing from the allocation"
+    },
+    {
+     "rule": "K-1",
+     "violations": 1,
+     "example": "CBL-0013: pairs present [2, 3, 4, 5, 6]\u2026 do not cover 1..24 exactly once"
+    }
+   ],
+   "cable_not_side_by_side (pair 2 moved five slots)": [
+    {
+     "rule": "D-2",
+     "violations": 1,
+     "example": "AR1CIOC100001 BP1 slot 7: 10-TT-1060A and 10-PS-1065A"
+    },
+    {
+     "rule": "K-1",
+     "violations": 1,
+     "example": "CBL-0013: pairs are not side by side in pair order"
+    }
+   ],
+   "spare_budget (rule set asks for 60 % empty baseplates, workbook built with 10 %)": [
+    {
+     "rule": "P-1",
+     "violations": 2,
+     "example": "cabinet #1: 4 empty baseplates, 20 required | cabinet #2: 6 empty baseplates, 20 required"
+    }
+   ],
+   "unparseable_name (cabinet name does not match the naming pattern)": [
+    {
+     "rule": "K-1",
+     "violations": 1,
+     "example": "CBL-0013: pairs present [2, 3, 4, 5, 6]\u2026 do not cover 1..24 exactly once"
+    },
+    {
+     "rule": "N-1..6",
+     "violations": 1,
+     "example": "CBL-0013/1: unparseable location names WRONG-NAME/AR1CIOC100001/001-CBP-1"
+    }
+   ]
+  }
+ },
+ "input_records": {
+  "input_columns": [
+   "Tag",
+   "IO",
+   "Cable",
+   "Cable Size",
+   "Pair",
+   "Grp",
+   "Seg"
+  ],
+  "input_rows": [
+   [
+    "ILL-001",
+    "AI",
+    "CBL-X1",
+    12,
+    1,
+    "G1",
+    "A"
+   ],
+   [
+    "ILL-002",
+    "DI",
+    "CBL-X1",
+    12,
+    2,
+    "G1",
+    "A"
+   ],
+   [
+    "ILL-003",
+    null,
+    "CBL-X2",
+    6,
+    1,
+    "G2",
+    null
+   ],
+   [
+    "ILL-004",
+    "PULSE-XYZ",
+    "CBL-X3",
+    6,
+    1,
+    null,
+    null
+   ],
+   [
+    "ILL-005",
+    "AI",
+    "CBL-X4",
+    6,
+    7,
+    null,
+    null
+   ],
+   [
+    "ILL-006",
+    "AI",
+    "CBL-X5",
+    6,
+    1,
+    "G3",
+    "C"
+   ],
+   [
+    "ILL-007",
+    "AI",
+    "CBL-X6",
+    6,
+    1,
+    null,
+    null
+   ],
+   [
+    "ILL-007",
+    "DI",
+    "CBL-X6",
+    6,
+    2,
+    null,
+    null
+   ],
+   [
+    "ILL-008",
+    "AI",
+    "CBL-X7",
+    2,
+    1,
+    "G1",
+    "A"
+   ],
+   [
+    "ILL-009",
+    "DI",
+    "CBL-X7",
+    2,
+    2,
+    "G1",
+    "B"
+   ]
+  ],
+  "tqs": [
+   {
+    "id": "TQ-0001",
+    "severity": "blocking",
+    "rule": "D-4",
+    "message": "Tag ILL-007 appears 2 times in the MDB",
+    "sources": [
+     "t.xlsx:S:8",
+     "t.xlsx:S:9"
+    ]
+   },
+   {
+    "id": "TQ-0002",
+    "severity": "blocking",
+    "rule": "D-1",
+    "message": "ILL-003: missing IO type",
+    "sources": [
+     "t.xlsx:S:4"
+    ]
+   },
+   {
+    "id": "TQ-0003",
+    "severity": "blocking",
+    "rule": "H-*",
+    "message": "ILL-004: IO type 'PULSE-XYZ' has no CHARM/terminal-block rule",
+    "sources": [
+     "t.xlsx:S:5"
+    ]
+   },
+   {
+    "id": "TQ-0004",
+    "severity": "blocking",
+    "rule": "S-3",
+    "message": "ILL-006: segregation value 'C' is not one of ['A', 'B']",
+    "sources": [
+     "t.xlsx:S:7"
+    ]
+   },
+   {
+    "id": "TQ-0005",
+    "severity": "blocking",
+    "rule": "D-3",
+    "message": "ILL-005: pair 7 exceeds the 6-pair size of cable CBL-X4",
+    "sources": [
+     "t.xlsx:S:6"
+    ]
+   },
+   {
+    "id": "TQ-0006",
+    "severity": "blocking",
+    "rule": "S-2",
+    "message": "Cable CBL-X7 carries both A and B signals; the cable cannot be kept together and segregated",
+    "sources": [
+     "t.xlsx:S:10",
+     "t.xlsx:S:11"
+    ]
+   }
+  ],
+  "row_status": [
+   {
+    "tag": "ILL-001",
+    "status": "Allocated",
+    "tq": ""
+   },
+   {
+    "tag": "ILL-002",
+    "status": "Allocated",
+    "tq": ""
+   },
+   {
+    "tag": "ILL-003",
+    "status": "TQ raised",
+    "tq": "TQ-0002"
+   },
+   {
+    "tag": "ILL-004",
+    "status": "TQ raised",
+    "tq": "TQ-0003"
+   },
+   {
+    "tag": "ILL-005",
+    "status": "TQ raised",
+    "tq": "TQ-0005"
+   },
+   {
+    "tag": "ILL-006",
+    "status": "TQ raised",
+    "tq": "TQ-0004"
+   },
+   {
+    "tag": "ILL-007",
+    "status": "TQ raised",
+    "tq": "TQ-0001"
+   },
+   {
+    "tag": "ILL-007",
+    "status": "TQ raised",
+    "tq": "TQ-0001"
+   },
+   {
+    "tag": "ILL-008",
+    "status": "TQ raised",
+    "tq": "TQ-0006"
+   },
+   {
+    "tag": "ILL-009",
+    "status": "TQ raised",
+    "tq": "TQ-0006"
+   }
+  ],
+  "violations": 0
+ }
+}
