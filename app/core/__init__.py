@@ -1,0 +1,1 @@
+"""Rendering-free application logic."""
