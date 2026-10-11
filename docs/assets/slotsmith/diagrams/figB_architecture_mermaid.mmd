@@ -1,0 +1,56 @@
+---
+config:
+  layout: elk
+---
+flowchart LR
+    subgraph IN["Inputs"]
+        MDB[/"Customer I/O list(s)<br/>.xlsx or .csv, one or many sheets"/]
+        RS[/"Rule set JSON<br/>(RuleSet, pydantic)"/]
+        RB[/"Rev B I/O list<br/>.xlsx or .csv"/]
+    end
+    subgraph ENG["src/slotsmith: the engine (pure Python, no UI imports)"]
+        ING["ingest.py<br/>read_mdb · auto_map"]
+        VAL["validate.py<br/>validate: cable blocks + TQs"]
+        ALC["allocator.py<br/>allocate: per-class FFD + Placer"]
+        EXP["export.py<br/>build_rows · write_workbook"]
+        VER["verifier.py<br/>verify (imports only rules.py)"]
+        REV["revision.py<br/>revise: pin, greedy fill"]
+        CPS["repair_cpsat.py<br/>repair_window (OR-Tools CP-SAT)"]
+        PIPE["pipeline.py<br/>run: orchestrates one allocation"]
+        GEN["generator.py<br/>synthetic MDB, error injection, Rev B"]
+    end
+    subgraph OUT["Outputs"]
+        WB[("Allocation workbook .xlsx<br/>IO Allocation · Cabinet Summary · TQ List<br/>Rule Check · Rule Set · Run Info")]
+        WBB[("Rev B workbook .xlsx<br/>same sheets + Revision Impact")]
+    end
+    subgraph SURF["Surfaces"]
+        CLI["cli.py<br/>generate · allocate · verify · revise · rules"]
+        UI["app/ (Streamlit)<br/>views, core/session.py"]
+    end
+    MDB --> ING --> VAL --> ALC --> EXP --> WB
+    RS -.-> VAL
+    RS -.-> ALC
+    RS -.-> VER
+    RS -.-> REV
+    WB -->|"re-read from file"| VER
+    VER -->|"Rule Check sheet written back"| WB
+    RB --> ING
+    ING -->|"Rev B rows"| REV
+    WB -->|"Rev A rows"| REV
+    REV -.->|"only if greedy fill fails"| CPS
+    REV --> EXP
+    EXP --> WBB
+    WBB -->|"re-read from file"| VER
+    PIPE --- ING
+    CLI --> PIPE
+    UI --> PIPE
+    UI --> REV
+    GEN -.->|"synthetic demo and tests"| MDB
+    classDef core fill:#e8f4ea,stroke:#2f7d4a,color:#0f2a18;
+    classDef chk fill:#fff4d6,stroke:#b07a00,color:#3a2900;
+    classDef file fill:#e8f1fb,stroke:#3a6ea5,color:#0d2238;
+    classDef surf fill:#f1ecfa,stroke:#6a4fa5,color:#241a3a;
+    class ING,VAL,ALC,EXP,REV,CPS,PIPE,GEN core;
+    class VER chk;
+    class MDB,RS,RB,WB,WBB file;
+    class CLI,UI surf;

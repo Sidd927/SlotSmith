@@ -1,0 +1,26 @@
+flowchart TD
+    RA[("Rev A rows<br/>(from run() or the Rev A workbook)")] --> L["Rebuild Rev A geometry<br/>cabinets, CIOC numbers, controllers, slot occupancy"]
+    RBn[("Rev B I/O list")] --> V["validate(Rev B): cable blocks + TQs"]
+    V --> CL["Classify cables<br/>same size, group and side as Rev A?"]
+    L --> CL
+    CL -->|"yes: pin to Rev A slots<br/>(new signals on spare pairs land with zero moves)"| PIN["Pinned cables"]
+    CL -->|"no: new or changed cable"| TODO["Cables to place<br/>sorted by group, size, name"]
+    TODO --> G["Greedy fill, in this order:<br/>1 free run in a compatible CIOC<br/>2 empty baseplate if spare budget allows<br/>3 new CIOC in a cabinet<br/>4 new cabinet (group contiguity kept)"]
+    G -->|"all placed"| BLD["Build Rev B layout (CIOC numbers kept)"]
+    G -->|"some cable fails"| CP["CP-SAT window repair<br/>widen cabinet window 0..5 steps, 10 s per solve<br/>objective: 1000 x moved signals + baseplates used"]
+    CP -->|"OPTIMAL or FEASIBLE"| BLD
+    CP -->|"INFEASIBLE / UNKNOWN for every window"| FB["Fallback: full re-allocation<br/>warning TQ R-2 raised"]
+    FB --> BLD
+    PIN --> BLD
+    BLD --> IMP["impact_report(Rev A, Rev B)<br/>moved, added, deleted, modified in place, unchanged"]
+    BLD --> VER["verify(Rev B rows)<br/>(UI and CLI re-verify the written file)"]
+    IMP --> X["Rev B workbook with Revision Impact sheet"]
+    VER --> X
+    classDef step fill:#e8f4ea,stroke:#2f7d4a,color:#0f2a18;
+    classDef chk fill:#fff4d6,stroke:#b07a00,color:#3a2900;
+    classDef file fill:#e8f1fb,stroke:#3a6ea5,color:#0d2238;
+    classDef warn fill:#fde8e8,stroke:#b03030,color:#3a0f0f;
+    class L,V,CL,PIN,TODO,G,BLD,IMP,X,CP step;
+    class VER chk;
+    class RA,RBn file;
+    class FB warn;

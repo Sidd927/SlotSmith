@@ -4,6 +4,8 @@ SlotSmith automates DeltaV field signal allocation using constraint-based optimi
 
 **VIT Code Apex 3.0 · Track 1 (Emerson) · PS 1.2 Project IO SIGNAL SUDOKU · Team Mac_Enthu**
 
+**Technical dossier:** the complete project description, architecture, algorithms, verifier, revision repair, evidence and limitations is in [docs/SlotSmith_Technical_Dossier.md](docs/SlotSmith_Technical_Dossier.md) (PDF: [docs/SlotSmith_Technical_Dossier.pdf](docs/SlotSmith_Technical_Dossier.pdf)).
+
 > Prototype status: works end-to-end on **synthetic** MDBs generated from the published rulebook. The organiser's sample MDB and allocation template have not been released, so nothing here demonstrates hidden-test compatibility.
 
 ## What it does

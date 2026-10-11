@@ -1,0 +1,13 @@
+{'n': 500, 'seed': 1, 'allocator_bp': 51, 'exact_bp': 51, 'reported_lb': 51}
+{'n': 500, 'seed': 2, 'allocator_bp': 52, 'exact_bp': 52, 'reported_lb': 52}
+{'n': 500, 'seed': 3, 'allocator_bp': 53, 'exact_bp': 53, 'reported_lb': 53}
+{'n': 2000, 'seed': 1, 'allocator_bp': 203, 'exact_bp': 203, 'reported_lb': 203}
+{'n': 2000, 'seed': 2, 'allocator_bp': 201, 'exact_bp': 201, 'reported_lb': 201}
+{'n': 2000, 'seed': 3, 'allocator_bp': 203, 'exact_bp': 203, 'reported_lb': 203}
+{'n': 10000, 'seed': 1, 'allocator_bp': 1000, 'exact_bp': 1000, 'reported_lb': 999}
+{'n': 10000, 'seed': 2, 'allocator_bp': 996, 'exact_bp': 996, 'reported_lb': 996}
+{'n': 10000, 'seed': 3, 'allocator_bp': 997, 'exact_bp': 997, 'reported_lb': 997}
+{'n': 20000, 'seed': 1, 'allocator_bp': 1996, 'exact_bp': 1996, 'reported_lb': 1995}
+{'n': 20000, 'seed': 2, 'allocator_bp': 1991, 'exact_bp': 1991, 'reported_lb': 1989}
+{'n': 20000, 'seed': 3, 'allocator_bp': 1991, 'exact_bp': 1991, 'reported_lb': 1990}
+{'cases': 150, 'exact_status': {'OPTIMAL': 148, 'FEASIBLE': 2}, 'allocator_worse': 0, 'examples': []}
