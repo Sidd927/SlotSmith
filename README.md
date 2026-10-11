@@ -20,7 +20,7 @@ SlotSmith automates DeltaV field signal allocation using constraint-based optimi
 .venv/bin/slotsmith allocate data/synthetic/mdb.xlsx --out artifacts/alloc.xlsx
 .venv/bin/slotsmith verify artifacts/alloc.xlsx --mdb data/synthetic/mdb.xlsx
 .venv/bin/slotsmith revise --prev artifacts/alloc.xlsx --mdb data/synthetic/mdb_revB.xlsx --out artifacts/alloc_revB.xlsx
-.venv/bin/streamlit run app/streamlit_app.py      # prototype UI
+.venv/bin/streamlit run app/streamlit_app.py      # landing page + workbench (light/dark follow the system or Streamlit Settings)
 .venv/bin/python -m pytest -q                     # 31 tests
 .venv/bin/python scripts/benchmark.py             # artifacts/benchmarks.json
 .venv/bin/python scripts/build_deck.py            # Round 1 deck
@@ -39,7 +39,7 @@ SlotSmith automates DeltaV field signal allocation using constraint-based optimi
 | Path | Contents |
 |---|---|
 | `src/slotsmith/` | engine (ingest, validate, rules, allocator, verifier, export, revision, repair_cpsat, generator, cli) |
-| `app/` | Streamlit prototype UI |
+| `app/` | Streamlit UI: `views/` (pages), `ui/` (theme, components, shell), `core/` (session and display logic). Design: [design.md](design.md) |
 | `tests/` | pytest + Hypothesis |
 | `scripts/` | benchmark, deck builder |
 | `docs/` | requirements, rule register, Emerson analysis, literature, sources, architecture, decisions, validation, limitations, ledger |

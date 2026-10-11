@@ -16,7 +16,7 @@ See [rule_register.md](rule_register.md):
 - R-2 whether an in-slot CHARM swap counts as a move.
 
 ## Engineering limits of the prototype
-- **Rules are parameters, not open-ended rule types.** Users can toggle and parameterise the built-in rule families and edit the CHARM/TB table and naming patterns without code changes. A genuinely *new kind* of rule (e.g. "AC and LV signals on separate baseplates") still requires code. The PS asks that users can "add as many rules as needed", so this is a gap.
+- **Rules are parameters, not open-ended rule types.** Users can toggle and parameterise the built-in rule families in the UI, and edit the CHARM/TB table and naming patterns by loading a modified rule set JSON file (the UI shows the hardware table and most naming patterns read-only); none of this needs code changes. A genuinely *new kind* of rule (e.g. "AC and LV signals on separate baseplates") still requires code. The PS asks that users can "add as many rules as needed", so this is a gap.
 - `allow_cable_straddle=true` is accepted but not used by the allocator (it never straddles). `multi_baseplate_cables_same_cioc` has no effect (always the same CIOC).
 - CP-SAT repair is **window-local**: the window is the group's cabinets plus neighbours, and existing cables may move at most one cabinet. Windows that stop at the 10 s limit with status FEASIBLE are accepted, so "fewest moves" is not always proven, even within the window.
 - CP-SAT repair uses 8 workers and a wall-clock limit, so revision move counts can vary between runs and machines (see artifacts/repro).
@@ -26,7 +26,7 @@ See [rule_register.md](rule_register.md):
 - CP-SAT repair can take up to ~55 s on 10k-signal revisions. The domains and windows can be tightened.
 - "Relay output (rule-based)" has no defined trigger in the PS. It is supported only via an explicit IO type (`DO-RELAY`).
 - Thermocouple terminal blocks (TC/mV TB per Emerson PDS) are not special-cased; the PS table says Standard.
-- The UI is a Streamlit prototype (rule toggles/parameters, cabinet map, TQs, revision diff). The AI helpers are not built; no LLM is used at runtime.
+- The UI is a Streamlit prototype (rule toggles/parameters, cabinet map, TQs, revision diff, Rev B export). Uploads accept `.xlsx` and `.csv` only (no `.xls`); a browser refresh starts a new session and loses the work (download deliverables first); no manual column-mapping override. See `docs/feature_capability_matrix.md` and `docs/ux_review_log.md`. The AI helpers are not built; no LLM is used at runtime.
 - No time-savings study. No comparison with Emerson's internal tools (not publicly available).
 
 ## Claims we deliberately do not make

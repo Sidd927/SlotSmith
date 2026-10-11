@@ -1,0 +1,46 @@
+# SlotSmith: Streamlit configuration. Theme values mirror the design tokens in design.md section C2.
+# Light/dark is Streamlit's native switch (Settings menu or system setting); custom CSS follows it via light-dark().
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "viewer"
+showSidebarNavigation = false
+
+[server]
+headless = true
+runOnSave = true
+
+[theme]
+base = "light"
+font = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+codeFont = "ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace"
+baseRadius = "6px"
+showSidebarBorder = true
+
+[theme.light]
+primaryColor = "#0A6C7A"
+backgroundColor = "#EEF0F3"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#16202B"
+borderColor = "#D3D8DF"
+linkColor = "#0A6C7A"
+codeBackgroundColor = "#F6F7F9"
+greenColor = "#187233"
+orangeColor = "#8A5A00"
+redColor = "#B3261E"
+blueColor = "#2B5DB8"
+
+[theme.dark]
+primaryColor = "#4FC3CF"
+backgroundColor = "#12161B"
+secondaryBackgroundColor = "#1A1F26"
+textColor = "#E8ECF1"
+borderColor = "#303846"
+linkColor = "#4FC3CF"
+codeBackgroundColor = "#222831"
+greenColor = "#4CC775"
+orangeColor = "#F0B64A"
+redColor = "#FF8F86"
+blueColor = "#86AEF5"
