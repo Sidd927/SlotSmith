@@ -37,7 +37,7 @@
 </div>
 
 <div align="center">
-  <img src="docs/assets/readme/ui_home.png" width="100%" alt="SlotSmith Electronic Marshalling Workstation UI" />
+  <img src="docs/assets/readme/hero_workspace.png" width="100%" alt="SlotSmith Electronic Marshalling Workstation UI" />
   <p><em>SlotSmith interactive engineering workstation: automated I/O ingestion, deterministic First-Fit-Decreasing allocation, independent mathematical verification, and minimal-move revision repair.</em></p>
 </div>
 
@@ -68,53 +68,71 @@ SlotSmith pairs a high-performance Python constraint backend with a modern, high
 ### 1. Landing Page & Digital Workspace
 The entry point provides one-click reference industrial benchmarks (2,000 signals with 6 injected edge cases), guided workflows, and live project session tracking.
 <div align="center">
-  <img src="docs/assets/readme/ui_home.png" width="95%" alt="SlotSmith Landing Page" />
+  <img src="docs/assets/readme/hero_workspace.png" width="95%" alt="SlotSmith Landing Page" />
   <p><strong>Figure 1:</strong> <em>SlotSmith landing view with quick actions, capability cards, and session lifecycle monitoring.</em></p>
 </div>
 
 ---
 
-### 2. Input Ingestion & Pre-Flight Data Audit (Stage 1 & 2)
+### 2. End-to-End Workflow Demonstration
+A complete walkthrough from synthetic dataset ingestion and pre-flight validation to FFD allocation, verifier certification, cabinet inspection, and Rev B revision repair.
+<div align="center">
+  <img src="docs/assets/readme/workflow_demo.gif" width="95%" alt="SlotSmith End-to-End Workflow Animation" />
+  <p><strong>Figure 2:</strong> <em>Automated end-to-end engineering session: data review, constraint solving, cabinet map inspection, and minimal-movement revision repair.</em></p>
+</div>
+
+---
+
+### 3. Input Ingestion & Pre-Flight Data Audit (Stage 1 & 2)
 Upload heterogeneous customer spreadsheets (`.xlsx`, `.xls`, `.csv`). The engine detects header rows, normalizes column synonyms, scores mapping confidence, and flags data anomalies prior to solving.
 <div align="center">
-  <img src="docs/assets/readme/ui_review.png" width="95%" alt="Stage 2 Review: Pre-flight Audit & Column Mapping" />
-  <p><strong>Figure 2:</strong> <em>Stage 2 Review interface: transparent column mapping confidence (High/Fuzzy), pre-flight integrity audit, and pending Technical Queries (TQs).</em></p>
+  <img src="docs/assets/readme/input_review.png" width="95%" alt="Stage 2 Review: Pre-flight Audit & Column Mapping" />
+  <p><strong>Figure 3:</strong> <em>Stage 2 Review interface: transparent column mapping confidence (High/Fuzzy), pre-flight integrity audit, and pending Technical Queries (TQs).</em></p>
 </div>
 
 ---
 
-### 3. Allocation Results & Independent Certification (Stage 4)
+### 4. Allocation Results & Independent Certification (Stage 4)
 View high-level cabinet utilization metrics, baseplate counts, and the certifying verifier badge confirming zero rule violations across all 11 constraint families.
 <div align="center">
-  <img src="docs/assets/readme/ui_results.png" width="95%" alt="Stage 4 Results: Allocation KPIs and Verifier Certification" />
-  <p><strong>Figure 3:</strong> <em>Allocation results dashboard: verifier certification banner, physical cabinet/CIOC summaries, and searchable Technical Query (TQ) exception register.</em></p>
+  <img src="docs/assets/readme/allocation_results.png" width="95%" alt="Stage 4 Results: Allocation KPIs and Verifier Certification" />
+  <p><strong>Figure 4:</strong> <em>Allocation results dashboard: verifier certification banner, physical cabinet/CIOC summaries, and searchable Technical Query (TQ) exception register.</em></p>
 </div>
 
 ---
 
-### 4. Interactive 2D Cabinet Marshalling Map (Spatial Digital Twin)
+### 5. Interactive 2D Cabinet Marshalling Map (Spatial Digital Twin)
 Explore marshalling cabinets in high contrast. CIOC carriers, 12-channel baseplates, and CHARM slots are color-coded according to Emerson signal standards (AI, AO, DI, DO, Isolated DO, Relay Output, Spare, Free).
 <div align="center">
-  <img src="docs/assets/readme/ui_cabinet_map.png" width="95%" alt="Cabinet Marshalling Map" />
-  <p><strong>Figure 4:</strong> <em>Cabinet Marshalling Map: spatial digital twin showing CIOC racks, baseplate groupings, and channel-level slot inspection.</em></p>
+  <img src="docs/assets/readme/cabinet_inspection.png" width="95%" alt="Cabinet Marshalling Map" />
+  <p><strong>Figure 5:</strong> <em>Cabinet Marshalling Map: spatial digital twin showing CIOC racks, baseplate groupings, and channel-level slot inspection.</em></p>
 </div>
 
 ---
 
-### 5. Revision Repair & Move Churn Minimization (Rev B)
+### 6. Revision Repair & Move Churn Minimization (Rev B)
 When client instrument revisions arrive, SlotSmith compares Rev B against Rev A, locks unchanged cables to their field slots, fills gaps greedily, and runs a localized CP-SAT solver to minimize costly wire moves.
 <div align="center">
-  <img src="docs/assets/readme/ui_revision_repair.png" width="95%" alt="Revision Repair Workbench" />
-  <p><strong>Figure 5:</strong> <em>Revision Repair view: detailed move breakdown (Moved, Added, Deleted, Modified in Place, Unchanged), cabinet impact tally, and delta verification.</em></p>
+  <img src="docs/assets/readme/revision_repair.png" width="95%" alt="Revision Repair Workbench" />
+  <p><strong>Figure 6:</strong> <em>Revision Repair view: detailed move breakdown (Moved, Added, Deleted, Modified in Place, Unchanged), cabinet impact tally, and delta verification.</em></p>
 </div>
 
 ---
 
-### 6. Industrial Hardware Grounding
+### 7. Export & Verified Engineering Deliverables (Stage 5)
+SlotSmith generates audit-ready, 7-sheet openpyxl Excel deliverables containing complete wire lists, terminal schedules, cabinet bills of materials, and verifier sign-off sheets.
+<div align="center">
+  <img src="docs/assets/readme/deliverables.png" width="95%" alt="Deliverables and Export Verification" />
+  <p><strong>Figure 7:</strong> <em>Stage 5 Deliverables: verified Rev A and Rev B workbooks, summary breakdowns, and downloadable JSON rule definitions.</em></p>
+</div>
+
+---
+
+### 8. Industrial Hardware Grounding
 SlotSmith is modeled directly on Emerson DeltaV physical hardware conventions, ensuring slot assignments map 1:1 to real DIN rails and terminal blocks.
 <div align="center">
   <img src="assets/landing/cabinet_inspection_photo.jpg" width="80%" alt="DeltaV Marshalling Cabinet Field Photo" />
-  <p><strong>Figure 6:</strong> <em>DeltaV Electronic Marshalling cabinet hardware: redundant CIOC carriers, CHARM baseplates, and multi-core field cable entries.</em></p>
+  <p><strong>Figure 8:</strong> <em>DeltaV Electronic Marshalling cabinet hardware: redundant CIOC carriers, CHARM baseplates, and multi-core field cable entries.</em></p>
 </div>
 
 ---
@@ -291,8 +309,10 @@ SlotSmith follows a layered, decoupled architecture designed for verification in
 ```mermaid
 graph TB
     subgraph Frontend ["Presentation Layer (Streamlit)"]
-        UI_APP["app/streamlit_app.py<br/>(Session State Hygiene, Fingerprinting, Navigation)"]
-        UI_LAND["app/landing/<br/>(tokens.py, styles.py, components.py, landing_view.py)"]
+        UI_APP["app/streamlit_app.py<br/>(Router & Session Lifecycle)"]
+        UI_VIEWS["app/views/<br/>(landing, input, review, allocate, results, cabinets, revise, deliverables)"]
+        UI_SHELL["app/ui/<br/>(shell, theme, components, flow, cabinet)"]
+        UI_CORE["app/core/<br/>(session, state, demo, rules_view, revision_view)"]
     end
 
     subgraph CoreEngine ["Core Engine (src/slotsmith/)"]
@@ -320,10 +340,11 @@ graph TB
         end
     end
 
-    UI_APP --> PIPE
-    UI_APP --> REVISE
-    UI_APP --> INGEST
-    UI_LAND --> UI_APP
+    UI_APP --> UI_VIEWS
+    UI_VIEWS --> UI_SHELL
+    UI_VIEWS --> UI_CORE
+    UI_CORE --> PIPE
+    UI_CORE --> REVISE
 
     CLI --> PIPE
     CLI --> REVISE
@@ -531,14 +552,10 @@ Evaluated across 10 distinct revision cases (5 cases at 2,000 signals, 5 cases a
 ```
 SlotSmith/
 ├── app/                                # Streamlit Interactive Frontend
-│   ├── landing/                        # Modular landing page subsystem
-│   │   ├── assets.py                   # SVG graphic definitions & badges
-│   │   ├── components.py               # Pure HTML component builders
-│   │   ├── data.py                     # Demonstration datasets & showcase channels
-│   │   ├── landing_view.py             # Landing view controller & query param routing
-│   │   ├── styles.py                   # Industrial theme tokens & CSS rules
-│   │   └── tokens.py                   # Color palette, spacing, and font constants
-│   └── streamlit_app.py                # Main UI entry point, state tracking, and stages
+│   ├── core/                           # State management, session, demo, & view models
+│   ├── ui/                             # Design system: shell, theme, typography, & layout
+│   ├── views/                          # Modular stage views (landing, review, allocate, etc.)
+│   └── streamlit_app.py                # Main UI entry point & native router
 ├── artifacts/                          # Reproducible benchmark evidence & test outputs
 │   ├── audit/                          # Bin-packing optimality audits & CP-SAT status logs
 │   │   ├── ffd_exact.json              # 19,682-instance CP-SAT comparison audit
@@ -550,12 +567,18 @@ SlotSmith/
 ├── assets/                             # Visual and physical assets
 │   └── landing/                        # Cabinet hardware photos and plant backgrounds
 ├── deliverables/                       # Hackathon competition deliverables
-│   └── round1/                         # Round 1 submission package
-│       ├── SlotSmith_Round1.pdf        # Final presentation deck (PDF format)
-│       ├── SlotSmith_Round1.pptx       # Final presentation deck (PPTX format)
+│   ├── pitch_deck/                     # Final audited presentation deliverables
+│   │   ├── SlotSmith_Final_Pitch_Deck.pdf  # Final presentation deck (PDF format)
+│   │   ├── SlotSmith_Final_Pitch_Deck.pptx # Editable PowerPoint deck
+│   │   └── rendered/                   # High-res renders of deck slides
+│   └── round1/                         # Round 1 screening submission package
+│       ├── SlotSmith_Round1.pdf        # Round 1 presentation deck (PDF format)
+│       ├── SlotSmith_Round1.pptx       # Round 1 presentation deck (PPTX format)
 │       ├── presentation_qa.md          # Deck claim-to-evidence audit log
 │       └── renders/                    # 110 DPI raster renders of slides 1–8
 ├── docs/                               # Engineering dossier, research, and rule books
+│   ├── SlotSmith_Technical_Dossier.md  # Comprehensive technical dossier with evidence tags
+│   ├── SlotSmith_Technical_Dossier.pdf # Formatted printable technical dossier
 │   ├── architecture.md                 # System architecture, dataflow, and FFD proof
 │   ├── emerson_product_analysis.md     # Emerson DeltaV hardware & software analysis
 │   ├── known_limitations.md            # Documented boundaries & unverified assumptions
@@ -645,8 +668,12 @@ This script creates a fresh isolated sandbox in `/tmp/slotsmith_clean_*`, instan
 
 ## <a id="dossier-and-deck"></a>📑 Technical Dossier & Pitch Deck
 
-For competition judges, technical evaluators, and system architects, detailed design documentation is available in the repository:
+For competition judges, technical evaluators, and system architects, detailed design documentation and presentation deliverables are available in the repository:
 
+- 📖 **[SlotSmith Technical Dossier (Markdown)](docs/SlotSmith_Technical_Dossier.md):** 1,519-line comprehensive design dossier with rigorous evidence classification tags (`[Impl]`, `[Test]`, `[Meas]`, `[Proof]`, `[Ext]`).
+- 📄 **[SlotSmith Technical Dossier (PDF)](docs/SlotSmith_Technical_Dossier.pdf):** Complete printable reference document.
+- 🎯 **[SlotSmith Final Pitch Deck (PDF)](deliverables/pitch_deck/SlotSmith_Final_Pitch_Deck.pdf):** Audited presentation deck.
+- 📊 **[SlotSmith Final Pitch Deck (PPTX)](deliverables/pitch_deck/SlotSmith_Final_Pitch_Deck.pptx):** Editable PowerPoint format.
 - 📄 **[SlotSmith Round 1 Presentation Deck (PDF)](deliverables/round1/SlotSmith_Round1.pdf):** Official 8-slide presentation submitted for Round 1 screening.
 - 📊 **[SlotSmith Round 1 Presentation Deck (PPTX)](deliverables/round1/SlotSmith_Round1.pptx):** Editable PowerPoint format built via [`scripts/build_deck.py`](scripts/build_deck.py).
 - 📋 **[Presentation QA & Claim Register](deliverables/round1/presentation_qa.md):** Slide-by-slide verification log linking every figure to test logs.
