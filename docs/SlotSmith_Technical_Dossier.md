@@ -354,7 +354,7 @@ Notes. `numpy` and `protobuf` are transitive dependencies of pandas and OR-Tools
 | Canonical field | Meaning | Type | Required | Accepted aliases (implemented) | Validation behaviour | Code |
 |---|---|---|---|---|---|---|
 | `tag` | Instrument tag, unique key of a signal | text | **yes** | tag, tag no, tag number, tagname, instrument tag, signal tag, dst, loop tag, device tag | Missing → TQ `D-1`. Duplicate → TQ `D-4`, **all** rows of that tag are blocked | [`SYNONYMS`](../src/slotsmith/ingest.py#L19), `validate` |
-| `io_type` | Signal type (AI, AO, DI, DO, DO-SOV, ...) | text | **yes** | io, io type, i/o, i/o type, signal type, type, io_type, channel type | Missing → `D-1`. No hardware rule for the normalised key → `H-*` (when switch `R6-hardware` is on) | `validate`, [`hardware_for`](../src/slotsmith/rules.py#L110) |
+| `io_type` | Signal type (AI, AO, DI, DO, DO-SOV, ...) | text | **yes** | io, io type, i/o, i/o type, signal type, type, io_type, channel type | Missing → `D-1`. No hardware rule for the normalised key → blocking `H-*`, **whether or not** `R6-hardware` is on (fail-closed interpretation, 13 Oct 2026; earlier text said "when the switch is on") | `validate`, [`hardware_for`](../src/slotsmith/rules.py#L110) |
 | `cable` | Cable the signal arrives on | text | **yes** | cable, cable no, cable number, cable tag, multicore, multi core, cable id, mc cable | Missing → `D-1` | `validate` |
 | `pair` | Pair number within the cable (1-based) | int (first digits) | **yes** | pair, pair no, pair number, core, core no, pair# | Missing or < 1 → `D-1`. Larger than the cable size → `D-3`. Two tags on one pair → `D-5` | `validate` |
 | `group` | IO group for "keep together" | text | no | grp, group, io grouping, io group, logical group, grouping | Several groups on one cable → `G-3` (when `R1-grouping` is on) | `validate` |
@@ -418,7 +418,7 @@ All rules below are **hard** constraints: SlotSmith has no soft preferences. Heu
 | **D-4/D-5** unique tag; unique (cable, pair) | One signal per tag and per pair | yes | – | Q-1 | validate on Rev B | blocking TQs | `test_duplicate_tag_and_pair` | – |
 | **S-2/S-3** A+B on one cable; invalid side | Cable integrity and A/B separation cannot both hold | yes (needs `R2-segregation` for S-2) | – | S-1 | validate | blocking TQ | `test_cable_with_a_and_b_is_blocked` | – |
 | **G-3** several groups on one cable | Cable stays whole, groups apart | yes (needs `R1-grouping`, isolation ≠ none) | – | G-1 | validate | blocking TQ | – (no dedicated test; covered by injected-error test) | – |
-| **H-\*** unknown I/O type | No rule for the CHARM/terminal block | yes (needs `R6-hardware`) | – | H-1..6 | validate | blocking TQ | `test_row_level_tqs` | – |
+| **H-\*** unknown I/O type | No rule for the CHARM/terminal block | yes (unconditional since 13 Oct 2026) | – | H-1..6 | validate | blocking TQ | `test_row_level_tqs` | – |
 | **K-1/K-2** cable whole, side by side, in pair order; 24-pair = two baseplates from slot 1 in one CIOC | PS rule 4 | – | block placement ([`ffd_pack`](../src/slotsmith/allocator.py#L81), [`build_units`](../src/slotsmith/allocator.py#L101)) | **K-1** | exactly-one start position per cable, aligned starts | verifier FAIL with example | [`test_24_pair_cable_takes_two_full_baseplates`](../tests/test_core.py#L88), `test_verifier_catches_spare_budget_and_cable_split` | `R4-cable` switch has no effect; straddling cannot be enabled in the allocator |
 | **D-2** one signal per slot | Physical | – | by construction (contiguous blocks) | **D-2** | `AddAtMostOne` per slot | FAIL | `test_verifier_catches_double_booked_slot` | – |
 | **C-1** capacity 12 · 8 · 4 | PS rule 3; Emerson data sheet | – | `_cioc_ok`, `_cab_ok` ([`Placer`](../src/slotsmith/allocator.py#L139)) | **C-1** | slot/baseplate ranges, ≤ 4 CIOCs | FAIL; oversize cable → capacity TQ | `test_oversized_cable_does_not_unplace_its_group` | `R3-capacity` switch has no effect; capacities are parameters |
@@ -577,7 +577,7 @@ A producer of an allocation can contain a bug that the producer itself cannot se
 - **Input representation [Impl].** [`load_allocation`](../src/slotsmith/verifier.py#L53) reads the sheet `IO Allocation` of the **exported workbook** as text; [`verify`](../src/slotsmith/verifier.py#L58) takes those rows, the original MDB DataFrame and the rule set.
 - **Allocation run** ([`run`](../src/slotsmith/pipeline.py#L63)): when an output path is given, the workbook is written, **re-read from disk and verified**, and rewritten with the Rule Check sheet. Without an output path (tests and some benchmarks) the in-memory rows are verified instead ([`pipeline.py` line 92–96](../src/slotsmith/pipeline.py#L92)).
 - **Revision**: `revise()` verifies in-memory Rev B rows for its metrics; the CLI and the UI then write the workbook, re-read it, verify it again and rewrite it with the report ([`run_revision`](../app/core/session.py#L169), CLI `revise`). Benchmark revision cases use the in-memory result only **[Impl]**.
-- **CLI** `slotsmith verify <workbook> --mdb <files>` verifies any workbook in this format and exits with code 2 if violations remain.
+- **CLI** `slotsmith verify <workbook> --mdb <files>` verifies any workbook in this format and exits with code 2 if violations remain, 3 if nothing failed but verification is incomplete (a family SKIPPED because its rule is off), otherwise 0.
 
 ### 11.3 The 11 check families
 
@@ -595,7 +595,7 @@ A producer of an allocation can contain a bug that the producer itself cannot se
 | C-2 | One controller per CIOC; ≤ 16 CIOCs per controller | sets |
 | M-1 | Allocated row equals the MDB row for I/O type, cable, group, side and pair | field comparison (blank MDB group or side is allowed: it may be inherited from the cable) |
 
-The report ([`verify`](../src/slotsmith/verifier.py#L58)) has one entry per family: PASS or FAIL, a violation count and the first five examples ([`total_violations`](../src/slotsmith/verifier.py#L243) sums the counts). The UI shows "Independent check: no violations" only when all 11 entries pass ([`is_verifier_certified`](../app/core/state.py#L467); the function name is historical, the on-screen wording avoids "certified").
+The report ([`verify`](../src/slotsmith/verifier.py#L58)) has one entry per family: PASS, FAIL or SKIPPED (a family whose controlling switch is off: S-1/R2, G-1/R1 or isolation `none`, P-1/R5, H-1..6/R6; never reported as PASS), a violation count, the first five examples and a `Note`. `verifier.summarize` gives passed/failed/skipped counts and the outcome (`passed`, `failed`, `incomplete`). A placed signal without CHARM/terminal block is a Q-1 violation regardless of switches. Earlier text: PASS or FAIL, a violation count and the first five examples ([`total_violations`](../src/slotsmith/verifier.py#L243) sums the counts). The UI shows a full pass only when all 11 entries ran and passed (a skipped family gives an "incomplete" outcome, never a pass) ([`is_verifier_certified`](../app/core/state.py#L467); the function name is historical, the on-screen wording avoids "certified").
 
 ### 11.4 What independence the code structure actually provides
 
@@ -837,7 +837,7 @@ All screenshots were captured from the running application (`streamlit run app/s
 | Allocation workbook `.xlsx` (UI name `SlotSmith_allocation.xlsx`) | [`write_workbook`](../src/slotsmith/export.py#L151) via `run` | The allocation, TQs, rule check and run information |
 | Rev B workbook `.xlsx` (`SlotSmith_allocation_RevB.xlsx`) | `write_workbook(..., impact=...)` via `revise` | Same sheets plus **Revision Impact** |
 | Rule set `.json` | `RuleSet.model_dump_json` | Reusable project rules |
-| CLI JSON metrics on stdout | `slotsmith allocate` / `revise` | Counts, timings, violations, solver log; exit code 2 if violations |
+| CLI JSON metrics on stdout | `slotsmith allocate` / `revise` | Counts, timings, violations, solver log; exit code 0 = all families ran and passed, 2 = violations (precedence), 3 = incomplete verification (no violation, a family SKIPPED because its rule is off); the line `verification: ... -> outcome` is printed (stderr for `allocate`/`revise`, stdout for `verify`) |
 | `<name>.injected.json` | `slotsmith generate --errors N` | Ground truth of injected synthetic errors |
 
 ### 15.2 Worksheets
@@ -847,7 +847,7 @@ All screenshots were captured from the running application (`streamlit run app/s
 | **IO Allocation** | `Tag, IO Type, Cable, Cable Size, Pair, IO Group, Segregation, Row Kind, Controller, System Cabinet, Marshalling Cabinet, CIOC, Baseplate, Slot, CHARM Address, CHARM Type, Terminal Block, Status, TQ Ref, Source` ([`COLUMNS`](../src/slotsmith/export.py#L21)) | One row **per slot of every placed cable**, plus one row per unplaced or blocked signal. `Row Kind`: `Signal`, `Spare pair` (wired, empty), `Held (TQ)` (slot kept for a blocked signal). `Status`: `Allocated`, `Spare`, `Reserved`, `Not allocated` (capacity), `TQ raised` (data problem). `TQ Ref` links a held or unplaced row to its TQ. `Source` is `file:sheet:row`. Sorted by cabinet, CIOC, baseplate, slot; unplaced rows last |
 | **Cabinet Summary** | `Marshalling Cabinet, CIOCs, Baseplates used, Empty baseplates (cabinet spare), Signals, Wired spare pairs, Held for TQ, Free slots on used baseplates, Fill % (signals / cabinet slots), Fill % (occupied / cabinet slots)` | One row per cabinet. "Empty baseplates" counts every unopened baseplate of the cabinet (32 − used); fill is relative to 384 slots per cabinet |
 | **TQ List** | `TQ, Severity, Category, Rule, Message, Tags, Cables, Source rows, Suggested action` (lists cut to 20 entries) | One row per TQ; severity `blocking`, `warning`, `info` |
-| **Rule Check** | `Rule, Check, Result, Violations, Examples` | The 11 verifier entries; examples limited to five |
+| **Rule Check** | `Rule, Check, Result (PASS/FAIL/SKIPPED), Violations, Examples, Note` | The 11 verifier entries; examples limited to five |
 | **Revision Impact** (Rev B only) | `Change, Tag, Cable, From, To, IO Type (A→B)` | One row per changed tag: Moved, Added, Deleted / not allocated in Rev B, Modified in place (CHARM/TB change). Unchanged signals are not listed |
 | **Rule Set** | `Parameter, Value` | Scalar parameters and the hardware rows. **Rule switches and I/O-type aliases are not exported**, so this sheet alone does not reproduce a run |
 | **Run Info** | `Key, Value` | Tool and version, rule-set name, **input file paths**, a note. For Rev B: tool, previous workbook path, Rev B path |
@@ -857,7 +857,7 @@ Naming: names come from the rule set's patterns (defaults reproduce the PS examp
 ### 15.3 What to check before relying on an export
 
 1. Read the **TQ List** and every `TQ raised`, `Not allocated` and `Held (TQ)` row: those signals are *not* placed.
-2. Confirm **Rule Check** shows PASS for all 11 rules *and* that the Rule Set sheet matches the project's intended rules (switches are not listed there).
+2. Confirm **Rule Check** shows PASS for all 11 rules *and* that the Rule Set sheet matches the project's intended rules (rule switches are listed there as `rule switch <id>` ON/OFF since 13 Oct 2026, and Run Info records disabled switches, verification counts and unresolved hardware).
 3. Compare names, CHARM types and terminal blocks with the project's hardware list and naming standard; the defaults are SlotSmith's reading of the PS.
 4. Treat `Fill %` as one of two possible definitions.
 5. Remove or accept the absolute paths in `Run Info` before sharing the file.

@@ -464,8 +464,28 @@ def filter_tqs(tqs: list[Any], severity: str = "All", search: str = "") -> list[
     return filtered
 
 
+def verification_status(res: Any) -> dict:
+    """Structured verification outcome used by every page: counts of passed / failed / skipped families and one outcome.
+
+    outcome: 'passed' (all families ran and passed), 'failed' (any violation), 'incomplete' (no violation but some
+    family was skipped because its rule is switched off), 'missing' (no usable report)."""
+    from slotsmith.verifier import summarize
+    check = getattr(res, "check", None) if res is not None else None
+    if not check or not isinstance(check, list):
+        return {"total": 0, "passed": 0, "failed": 0, "skipped": 0, "outcome": "missing", "skipped_rules": [], "failed_rules": []}
+    sm = summarize(check)
+    if sm["total"] < 11:
+        sm["outcome"] = "missing"
+    return sm
+
+
+def unresolved_hardware(res: Any) -> list[Any]:
+    """Technical queries for signals whose I/O type has no CHARM / terminal-block mapping (rule ref H-*)."""
+    return [t for t in (getattr(res, "tqs", None) or []) if getattr(t, "rule_ref", "") == "H-*"]
+
+
 def is_verifier_certified(res: Any) -> tuple[bool, str, list[str]]:
-    """Determine whether the independent verifier reports no violations (all 11 rule families PASS).
+    """True only if all 11 rule families RAN and passed. A skipped family is not a pass.
 
     Returns:
         (certified, summary_message, list_of_failed_rule_refs)
@@ -477,10 +497,12 @@ def is_verifier_certified(res: Any) -> tuple[bool, str, list[str]]:
         return False, "Independent verification check report is missing.", []
     if len(check) < 11:
         return False, f"Incomplete verification report ({len(check)} of 11 checks recorded).", []
-
-    failed = [c for c in check if c.get("Result") != "PASS" or c.get("Violations", 0) > 0]
-    if failed:
-        rule_refs = [str(c.get("Rule", "?")) for c in failed]
-        return False, f"Rule violations detected in {len(failed)} rule family/families: {', '.join(rule_refs)}.", rule_refs
-
-    return True, "Verified: all 11 rule families passed the independent check on the exported rows.", []
+    sm = verification_status(res)
+    if sm["failed"]:
+        rule_refs = sm["failed_rules"]
+        return False, f"Rule violations detected in {len(rule_refs)} rule family/families: {', '.join(rule_refs)}.", rule_refs
+    if sm["skipped"]:
+        names = ", ".join(r for r, _ in sm["skipped_rules"])
+        return False, (f"{sm['passed']} of {sm['total']} rule families passed; {sm['skipped']} were skipped because their "
+                       f"rule is switched off ({names}). Not a full verification."), []
+    return True, "Verified: all 11 rule families ran and passed the independent check on the exported rows.", []

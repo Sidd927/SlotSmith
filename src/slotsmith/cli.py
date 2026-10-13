@@ -12,11 +12,37 @@ from .ingest import read_mdb
 from .pipeline import run
 from .revision import revise
 from .rules import RuleSet, default_ruleset
-from .verifier import load_allocation, total_violations, verify
+from .verifier import load_allocation, summarize, total_violations, verify
 
 
 def _rules(path: str | None) -> RuleSet:
     return RuleSet.load(path) if path else default_ruleset()
+
+
+# Exit codes (documented in README and the dossier): 0 = every verification family ran and found no violation;
+# 2 = at least one violation (takes precedence); 3 = no violation but verification is incomplete (a family was SKIPPED
+# because its rule is switched off). 1 is left to argparse/uncaught errors.
+EXIT_OK, EXIT_VIOLATIONS, EXIT_INCOMPLETE = 0, 2, 3
+
+
+def _exit_code(check: list[dict]) -> int:
+    if total_violations(check) or summarize(check)["failed"]:
+        return EXIT_VIOLATIONS
+    return EXIT_INCOMPLETE if summarize(check)["outcome"] != "passed" else EXIT_OK
+
+
+def _outcome(check: list[dict]) -> str:
+    """One truthful line about the verification: counts and outcome (a skipped family is not a pass)."""
+    sm = summarize(check)
+    txt = f"verification: {sm['passed']} passed, {sm['failed']} failed, {sm['skipped']} skipped of {sm['total']} -> {sm['outcome']}"
+    if sm["skipped_rules"]:
+        txt += " (skipped: " + "; ".join(f"{r} {n}" for r, n in sm["skipped_rules"]) + ")"
+    return txt
+
+
+def _warn_if_incomplete(check: list[dict]) -> None:
+    if summarize(check)["outcome"] != "passed":
+        print(_outcome(check), file=sys.stderr)
 
 
 def main(argv=None) -> int:
@@ -60,13 +86,15 @@ def main(argv=None) -> int:
     elif args.cmd == "allocate":
         res = run(args.mdb, _rules(args.rules), args.out)
         print(json.dumps({**res.metrics, **{k: round(t, 3) for k, t in res.timings.items()}}, indent=1))
-        return 0 if res.metrics["violations"] == 0 else 2
+        _warn_if_incomplete(res.check)
+        return _exit_code(res.check)
     elif args.cmd == "verify":
         rules = _rules(args.rules)
         rep = verify(load_allocation(args.allocation), read_mdb(args.mdb).df, rules)
         for c in rep:
-            print(f"{c['Result']:4s} {c['Rule']:8s} {c['Violations']:5d}  {c['Check']}  {c['Examples'][:120]}")
-        return 0 if total_violations(rep) == 0 else 2
+            print(f"{c['Result']:7s} {c['Rule']:8s} {c['Violations']:5d}  {c['Check']}  {(c['Examples'] or c.get('Note', ''))[:120]}")
+        print(_outcome(rep))
+        return _exit_code(rep)
     elif args.cmd == "revise":
         rules = _rules(args.rules)
         prev = load_allocation(args.prev)
@@ -79,7 +107,8 @@ def main(argv=None) -> int:
         write_workbook(args.out, rr.rows, rr.summary, rr.tqs, rr.check, rules, meta, impact=rr.impact)
         print(json.dumps({k: v for k, v in rr.metrics.items() if k != "cabinets_hit"} |
                          {"cabinets_hit": len(rr.metrics["cabinets_hit"])}, indent=1))
-        return 0 if rr.metrics["violations"] == 0 else 2
+        _warn_if_incomplete(rr.check)
+        return _exit_code(rr.check)
     elif args.cmd == "rules":
         print(default_ruleset().model_dump_json(indent=2))
     return 0

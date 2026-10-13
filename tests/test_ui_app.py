@@ -84,7 +84,7 @@ def test_landing_demo_cta_loads_dataset_and_opens_review():
     ds = at.session_state["dataset"]
     assert ds["synthetic"] is True and "2,000" in ds["label"]
     assert at.session_state["paths"]
-    assert any("Review" in m.value for m in at.markdown)
+    assert "Review the data" in html_blob(at)   # landed on the Review page
 
 
 # ----------------------------------------------------------------------------- empty states and routes
@@ -113,7 +113,7 @@ def test_allocate_page_has_no_duplicate_widget_keys_and_generates_summary(loaded
     at = page("allocate", loaded_state)
     assert not at.exception
     keys = [t.key for t in at.toggle]
-    assert len(keys) == len(set(keys)) == 7
+    assert len(keys) == len(set(keys)) == 2   # only the switches the engine honours (R1, R2)
     summary = " ".join(h.value for h in at.get("html"))
     assert "4 of 32 baseplates" in summary        # computed from the default rules, not static text
 
@@ -132,7 +132,7 @@ def test_results_page_reports_verification_and_counts(allocated_state):
     at = page("results", allocated_state)
     assert not at.exception
     html = " ".join(h.value for h in at.get("html"))
-    assert "no violations" in html and "Held as queries" in html
+    assert "no violations" in html.lower() and "Held as queries" in html
     assert "certified" not in html.lower() and "guarantee" not in html.lower()
 
 
@@ -158,7 +158,7 @@ def test_revise_page_shows_solver_status_and_download(revised_state):
     at = page("revise", revised_state)
     assert not at.exception
     html = " ".join(h.value for h in at.get("html"))
-    assert "Verifier violations" in html
+    assert "Rev B verification" in html
     assert any(w in html for w in ("No solver repair was needed", "proven exact", "best-found", "fully re-allocated"))
 
 

@@ -57,6 +57,8 @@ def build_rows(val: ValidationResult, result: AllocationResult, rules: RuleSet) 
             if s is not None:
                 hw = rules.hardware_for(s.io_type)
                 kind, tag, io, status, tq, src = "Signal", s.tag, s.io_type_raw, "Allocated", "", s.src
+                if hw is None:   # unreachable: validate() holds every signal without a hardware rule (fail closed)
+                    raise ValueError(f"{s.tag}: IO type '{s.io_type_raw}' reached export without a hardware rule")
                 charm, tb = hw.charm, hw.terminal_block
             else:
                 held = pair in val.held_slots.get(cable, set())
@@ -65,7 +67,8 @@ def build_rows(val: ValidationResult, result: AllocationResult, rules: RuleSet) 
                 charm, tb = "", ""
             rows.append({
                 "Tag": tag, "IO Type": io, "Cable": cable, "Cable Size": b.size, "Pair": pair,
-                "IO Group": b.group or "", "Segregation": b.seg or "", "Row Kind": kind,
+                "IO Group": (s.group if s is not None and s.group else b.group) or "",
+                "Segregation": (s.seg if s is not None and s.seg else b.seg) or "", "Row Kind": kind,
                 "Controller": fmt(n.controller, seq=ctl),
                 "System Cabinet": fmt(n.system_cabinet, seq=syscab),
                 "Marshalling Cabinet": fmt(n.marshalling_cabinet, seq=pl.cabinet),
@@ -94,14 +97,22 @@ def _unplaced_row(tag, io, cable, size, pair, group, seg, status, tq, src):
             "_cab": None, "_cioc": None, "_bp": None}
 
 
+def _raw(v):
+    """Original cell value, with pandas NaN/None shown as empty (a NaN is truthy and would otherwise be written as 'nan')."""
+    return "" if v is None or (isinstance(v, float) and v != v) else v
+
+
 def add_blocked_rows(rows: list[dict], df: pd.DataFrame, val: ValidationResult) -> list[dict]:
-    """Every MDB row whose signal is blocked by a TQ gets an explicit 'TQ raised' row (rule Q-1)."""
+    """Every MDB row whose signal is blocked by a TQ gets an explicit 'TQ raised' row (rule Q-1).
+
+    The lookup key must match validate(): a blank tag (NaN from a CSV/Excel read) is keyed by its source row."""
+    from .validate import _clean
     for r in df.itertuples(index=False):
-        key = r.tag or f"{r.src_file}:{r.src_sheet}:{r.src_row}"
+        src = f"{r.src_file}:{r.src_sheet}:{r.src_row}"
+        key = _clean(r.tag) or src
         if key in val.blocked_tags:
-            rows.append(_unplaced_row(r.tag or "", r.io_type or "", r.cable or "", "", r.pair or "",
-                                      r.group, r.seg, "TQ raised", val.blocked_tags[key],
-                                      f"{r.src_file}:{r.src_sheet}:{r.src_row}"))
+            rows.append(_unplaced_row(_raw(r.tag), _raw(r.io_type), _raw(r.cable), "", _raw(r.pair),
+                                      _raw(r.group), _raw(r.seg), "TQ raised", val.blocked_tags[key], src))
     return rows
 
 
@@ -148,6 +159,26 @@ def _write_sheet(ws, records: list[dict], cols: list[str] | None = None):
     ws.auto_filter.ref = ws.dimensions
 
 
+def _evidence(tqs, check: list[dict], rules: RuleSet) -> dict:
+    """Run Info lines that make the workbook self-explanatory: effective switches, verification counts, unresolved hardware."""
+    from .verifier import summarize
+    off = [t.id for t in rules.toggles if not t.enabled]
+    out = {"disabled rule switches": ", ".join(off) if off else "none"}
+    if check:
+        sm = summarize(check)
+        txt = f"{sm['total']} families: {sm['passed']} passed, {sm['failed']} failed, {sm['skipped']} skipped; outcome: {sm['outcome']}"
+        if sm["skipped_rules"]:
+            txt += " (skipped: " + "; ".join(f"{r} {n}" for r, n in sm["skipped_rules"]) + ")"
+        out["verification"] = txt
+    else:
+        out["verification"] = "not yet run when this sheet was first written"
+    hw = [t for t in tqs if t.rule_ref == "H-*"]
+    out["unresolved hardware (H-* queries)"] = (f"{len(hw)} held: " + ", ".join(sorted({x for t in hw for x in t.tags}))[:300]
+                                                 if hw else "none")
+    out["technical queries"] = f"{len(tqs)} total, {sum(1 for t in tqs if t.severity == 'blocking')} blocking"
+    return out
+
+
 def write_workbook(path: str | Path, rows: list[dict], summ: list[dict], tqs, check: list[dict],
                    rules: RuleSet, meta: dict, impact: list[dict] | None = None):
     wb = Workbook()
@@ -163,8 +194,11 @@ def write_workbook(path: str | Path, rows: list[dict], summ: list[dict], tqs, ch
     _write_sheet(wb.create_sheet("Rule Check"), check)
     if impact is not None:
         _write_sheet(wb.create_sheet("Revision Impact"), impact or [{"Change": "none"}])
+    switches = [{"Parameter": f"rule switch {t.id}", "Value": "ON" if t.enabled else "OFF",
+                 } for t in rules.toggles]
     _write_sheet(wb.create_sheet("Rule Set"), [{"Parameter": k, "Value": str(v)} for k, v in
                                                rules.model_dump(exclude={"hardware", "toggles", "io_type_aliases"}).items()] +
+                 switches +
                  [{"Parameter": f"hardware {h.id}", "Value": f"{h.io_types} -> {h.charm} / {h.terminal_block}"} for h in rules.hardware])
-    _write_sheet(wb.create_sheet("Run Info"), [{"Key": k, "Value": str(v)} for k, v in meta.items()])
+    _write_sheet(wb.create_sheet("Run Info"), [{"Key": k, "Value": str(v)} for k, v in {**meta, **_evidence(tqs, check, rules)}.items()])
     wb.save(path)

@@ -2,6 +2,50 @@
 
 Canonical. Version 2 (11 Oct 2026). Supersedes `docs/audit/design.md` (an earlier reference-image spec) and the visual direction of the previous Streamlit UI. Evidence: [docs/ux_research.md](docs/ux_research.md). Feature truth: [docs/feature_capability_matrix.md](docs/feature_capability_matrix.md). Review history: [docs/ux_review_log.md](docs/ux_review_log.md).
 
+> **v4 (12 Oct 2026) is the current visual and interaction layer.** Sections A and B (intent, information architecture) still hold. The colour table in C2 and the landing notes in E predate v4; the authoritative tokens are in `app/ui/theme.py` and the rules below.
+
+## v5 additions (status vocabulary and workbench shell)
+
+- **Status vocabulary (`app/core/status.py`, `components.verdict`, `freshness_chip`, `verification_chip`).** Five facts are never merged: *freshness* (results match inputs or are stale; "match inputs" is neutral grey and says nothing about correctness), *allocation* (complete or partial), *verification* (passed / incomplete / failed, with passed, failed, skipped counts), *hardware* (unresolved mappings) and *disabled rules*. Green appears only when every row is placed, every check ran and passed, and the results match the inputs. A generic "current" label is not used anywhere. A stale run shows "Previous run: verification ..." instead of a verification result.
+- **Results lead with a verdict**, then the five facts, then a numbered "Required before you rely on this result" list derived from the real state (`next_actions`), then the readout and tables.
+- **Availability is not acceptance.** Deliverable cards show file freshness and verification outcome separately; downloads stay gated only by freshness (unchanged policy) and failed or incomplete files are labelled "not engineering-verified" in the card and inside the workbook.
+- **Revise** separates the Rev B verdict from "Repair search (local only)", which states that a locally proven window says nothing about the whole project.
+- **Typography:** workbench titles are sans (editorial serif is reserved for the landing page); no outlined numerals; technical labels are at least 11 px (11.5 to 12 px for mono uppercase labels).
+- **Navigation:** the rail icons and the workflow strip come from the same derived stage state (never a check mark for failed or incomplete work). Allocate stacks the run card above the rules below 1100 px; deliverable cards stack below 1100 px.
+- **Landing:** removed hackathon branding and "not configured" placeholders (project links appear only when configured and valid); added the problem, deliverables and a Supported / Experimental / Not validated section. The synthetic demo states that agreement between the generator and the allocator is a consistency check.
+- **Design references (MotionSites, actually inspected 13 Oct 2026):** see `docs/UI_UX_AUDIT.md`, Round 3.
+
+## v4 design system and interaction principles
+
+**Art direction.** Industrial precision x editorial sophistication x subtle technical atmosphere. Warm paper reading surfaces, near-black "instrument" surfaces for anything that shows the machine working (hero bench, verification readouts), teal as the one interactive accent. Colour is semantic: green = verified, amber = stale or attention, red = blocking or failed, blue = informational.
+
+**Typography.** Display: system serif stack (Iowan Old Style, Palatino, Georgia), tight tracking, used for page titles and landing headlines only. UI: system sans. Technical identifiers (addresses, run ids, tags, rule ids, KPI numerals): system monospace with tabular figures. No web fonts, so nothing can fail to load.
+
+**Depth.** Fine 28-44 px grid textures (CSS gradients, masked so they fade), a faint ghost step numeral on workbench headers, layered dark panels with hairline borders. No blobs, glassmorphism or stock imagery.
+
+**Tokens.** `--ss-*` colours with `light-dark()` pairs (`TOKENS` in `theme.py`; hex fallback first), radii (4/8/14/pill), motion (`--ss-t-fast` 120 ms, `--ss-t-med` 200 ms, `--ss-t-slow` 420 ms, one easing `--ss-ease`). Fixed dark values for instrument surfaces live in `landing.css` (`--c-*`) and are theme-independent on purpose.
+
+**CSS layout.** `app/ui/css/base.css` (foundations, controls, shared components, cursor styles), `workbench.css` (cabinet, instrument layer, page-enter), `landing.css` (hero, bench, story, evidence, footer), `responsive.css` (breakpoints and reduced motion). `theme.stylesheet()` concatenates them once per process (restart the server after CSS or Python edits: it is cached).
+
+**Components.** Page: `shell.header` (workflow strip + ghost numeral), `shell.next_action`, context bar with breadcrumb and run id. Status: `chip`, `banner`, `composition_bar`, `verify_readout`, `change_kind`. Data: `tile`, `ledger`, `kv`. Landing: `flow.bench_html` (hero and story share it), `flow.story_html`, `flow_html`. Status icons are CSS glyphs because Streamlit's HTML sanitiser strips `<svg>`; scripts may not contain HTML literals either.
+
+**Verification truthfulness.** Each verifier family is PASS (ran, nothing found), FAIL (ran, violation) or SKIPPED (its rule is switched off); skipped is never shown as pass. Every page derives its wording from `app.core.state.verification_status`: outcome `passed` / `failed` / `incomplete`, with passed, failed and skipped counts always shown. Allocation completeness, technical-query status, verification outcome and disabled rules are four separate facts. Unresolved hardware (`H-*`) is a held technical query, drawn on the cabinet map as a red dashed `?` slot, never tinted as a signal type.
+
+**Interaction principles.**
+1. Never delay an action to show an animation; motion explains state or continuity.
+2. Everything is visible without animation; animation only reveals or emphasises. Reduced motion disables all animation, the cursor ring and smooth scrolling globally, and the scroll story becomes a static stacked section.
+3. Errors, stale states and verification results are never animated away.
+4. Colour is never the only cue (glyph + word + colour; two-letter signal codes).
+5. Hover is never the only way to learn something (the bench trace also opens on keyboard focus; its default trace is visible).
+
+**Motion inventory.** Hero load sequence (wires draw, slots land, checks tick; plays once, ~3.3 s, content usable immediately). Scroll story: native CSS scroll-driven animation (`view-timeline`), Chromium-class only, guarded by `@supports` and `prefers-reduced-motion: no-preference` and a 1000 px minimum width. Smooth in-page anchors (`scroll-behavior`). Page-enter: top-level blocks of a workbench page rise in once (320 ms, staggered) because new DOM nodes animate on mount; unchanged blocks on a rerun do not replay. Verification readout cells pop in on arrival. Stale chip pulses twice. Button hover/press, tile hover, tab underline, expander border.
+
+**Cursor.** `app/ui/fx.py`: one idempotent script (guarded by `window.__ssFx`), fine pointer + no reduced-motion only, a small dot and a lagging ring (`transform` only, requestAnimationFrame only while moving), expands over interactive elements, shrinks on press, hides over text fields. `pointer-events:none`; the native cursor is never hidden; hidden for coarse pointers.
+
+**Route transitions.** Streamlit pages are server-driven reruns: a true cross-page animation is not possible without a framework change. The honest substitute is the page-enter stagger plus Streamlit's native running indicator. Allocation and revision show `st.status`.
+
+**Responsive.** Hero stacks below 1100 px (copy, then bench full width); bench lanes stack below 640 px; story is static below 1000 px; sidebar rail narrows to 236 px below 1100 px; context bar wraps; cabinet CIOC cards wrap into a grid.
+
 > Status marker convention: **[built]** = implemented and verified; **[limit]** = known limitation, documented. This file must always describe what is actually implemented.
 
 ## A. Product intent

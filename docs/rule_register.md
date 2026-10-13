@@ -68,6 +68,7 @@ Default mapping table. It is user-editable, and keyed by an IO-type string after
 | H-5 | DO normal | High-side DO CHARM | Standard | p5 |
 | H-6 | DO relay output (rule-based) | High-side DO CHARM | Relay output | p5 |
 
+- **Ambiguity H-0 (R6 switch).** The problem statement says rules can be switched on and off but does not say what switching hardware selection off means for an I/O type that has no mapping. This register does **not** establish that semantics. Interpretation in force since 13 Oct 2026 (project owner's decision, not organiser-approved): fail closed. The `H-*` query and the held row are unconditional; the switch only controls whether the verifier compares CHARM/terminal block with the table, and when off it reports `H-1..6` as SKIPPED. No mapping is ever invented.
 - **Ambiguity H-A.** "AI CHARM (HART / RTD)": the choice between the AI 4-20 mA HART and RTD CHARMs needs an instrument-type attribute (e.g. TE/RTD vs TT transmitter).
 - **Ambiguity H-B.** Thermocouples need the TC/mV terminal block (EXT S-03 p.5), but the PS says Standard. We follow the PS and raise an info TQ for TC tags.
 - **Ambiguity H-C.** The trigger condition for "relay output (rule-based)" is not defined. It is a parameterised rule (e.g. by tag prefix or a load column).

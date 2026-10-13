@@ -262,3 +262,12 @@ def get_audit(state: State):
     audit = compute_preflight_audit(mdb, state["rules"])
     state["_audit"] = (key, audit)
     return audit
+
+
+def run_id(state: State) -> str:
+    """Short stable id of the current Rev A run (rule + input fingerprints). Empty when nothing has been allocated."""
+    import hashlib
+    if state.get("res") is None:
+        return ""
+    raw = f'{state.get("allocated_rule_fp")}|{state.get("allocated_input_fp")}'
+    return hashlib.sha1(raw.encode()).hexdigest()[:8].upper()

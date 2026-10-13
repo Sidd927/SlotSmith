@@ -1,0 +1,44 @@
+/* ===== responsive + motion preferences ===== */
+@media (min-width:769px){.st-key-stages_menu{display:none;}}
+@media (max-width:768px){.ss-header{padding-left:34px;}}
+@media (max-width:1099px){[data-testid="stMainBlockContainer"]{padding:1rem 1.25rem 3rem;}
+ .ss-prog li{font-size:0;} .ss-prog li .g{font-size:13px;width:auto;}
+ .ss-how{grid-template-columns:1fr;}}
+@media (max-width:699px){
+ [data-testid="stMainBlockContainer"]{padding:.75rem .9rem 3rem;}
+ .ss-nav{display:none;} .ss-header{gap:10px;flex-wrap:wrap;}
+ .ss-tiles{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .ss-cabwrap{grid-template-columns:minmax(0,1fr);}
+ .ss-ph-title{font-size:1.9rem;}
+}
+@media (prefers-reduced-motion:reduce){
+ .stApp *,.stApp *::before,.stApp *::after{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+}
+
+/* tablet: the sidebar rail is narrower so the page keeps room; the context bar wraps instead of truncating */
+@media (max-width:1100px){
+ [data-testid="stSidebar"][aria-expanded="true"]{width:236px !important;min-width:236px !important;}
+ .st-key-wbhdr [data-testid="stHorizontalBlock"]{flex-wrap:wrap;gap:6px 10px;}
+ .st-key-wbhdr [data-testid="stColumn"]{flex:1 1 auto;min-width:0;width:auto !important;}
+ .st-key-wbhdr [data-testid="stColumn"]:last-child{flex:0 0 auto;}
+}
+@media (max-width:699px){
+ .st-key-wbhdr [data-testid="stColumn"]:last-child [data-testid="stVerticalBlock"]{flex-direction:row;flex-wrap:wrap;gap:8px;}
+ .st-key-wbhdr [data-testid="stColumn"]:last-child [data-testid="stElementContainer"],.st-key-wbhdr [data-testid="stColumn"]:last-child [data-testid="stPopover"]{width:auto !important;flex:0 0 auto;}
+}
+
+/* Allocate on tablet/mobile: the run card (primary action) stacks above the rules instead of squeezing both columns */
+@media (max-width:1100px){
+ [data-testid="stHorizontalBlock"]:has(.st-key-runcard){flex-wrap:wrap;}
+ [data-testid="stHorizontalBlock"]:has(.st-key-runcard)>[data-testid="stColumn"]{flex:1 1 100%;min-width:100%;}
+ [data-testid="stHorizontalBlock"]:has(.st-key-runcard)>[data-testid="stColumn"]:has(.st-key-runcard){order:-1;}
+}
+
+/* long text values (e.g. "Incomplete") must never widen a tile; deliverable cards stack before they squeeze */
+.ss-tile .v{overflow-wrap:anywhere;}
+@media (max-width:699px){.ss-tile .v{font-size:clamp(20px,6.4vw,28px);}}
+.ss-art .ss-chip{white-space:normal;line-height:1.3;}
+@media (max-width:1100px){
+ [data-testid="stHorizontalBlock"]:has(.ss-sheets){flex-wrap:wrap;}
+ [data-testid="stHorizontalBlock"]:has(.ss-sheets)>[data-testid="stColumn"]{flex:1 1 100%;min-width:100%;}
+}

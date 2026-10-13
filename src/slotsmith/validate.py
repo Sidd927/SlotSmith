@@ -86,8 +86,12 @@ def validate(df: pd.DataFrame, rules: RuleSet) -> ValidationResult:
         if pair is None or pair < 1:
             problems.append(("D-1", f"missing or invalid pair '{r.pair}'"))
         io_key = rules.normalise_io_type(r.io_type) if r.io_type else None
-        if io_key and rules.enabled("R6-hardware") and rules.hardware_for(io_key) is None:
-            problems.append(("H-*", f"IO type '{r.io_type}' has no CHARM/terminal-block rule"))
+        # Fail closed: a signal with no hardware mapping is held as a blocking TQ whether or not R6-hardware is on.
+        # The R6 switch controls only whether the verifier compares CHARM/terminal block with the table; it never
+        # makes an unknown hardware assignment valid (interpretation chosen 13 Oct 2026, see docs/rule_register.md section 6).
+        if io_key and rules.hardware_for(io_key) is None:
+            off = "" if rules.enabled("R6-hardware") else " (R6-hardware is switched off, but unknown hardware stays unresolved)"
+            problems.append(("H-*", f"IO type '{r.io_type}' has no CHARM/terminal-block rule{off}"))
         seg = r.seg.upper() if r.seg else None
         if seg and seg not in rules.segregation_values:
             problems.append(("S-3", f"segregation value '{r.seg}' is not one of {rules.segregation_values}"))
@@ -184,8 +188,20 @@ def validate(df: pd.DataFrame, rules: RuleSet) -> ValidationResult:
             block_cable("G-3", f"Cable {cable} carries signals from several IO groups {sorted(groups)}",
                         "Confirm the IO grouping for this cable")
             continue
-        seg = next(iter(segs)) if segs else None
-        group = next(iter(groups)) if groups else None
+        # A cable that mixes sides (or groups) can only reach this point when the controlling switch is off. It has no single
+        # side/group: it is placed as an unsided/ungrouped cable (deterministic, never "first item of a set"), every signal
+        # keeps its own side/group in the export, and a warning TQ states that separation is not enforced for it.
+        mixed_seg, mixed_grp = len(segs) > 1, len(groups) > 1
+        seg = None if mixed_seg else next(iter(segs), None)
+        group = None if mixed_grp else next(iter(groups), None)
+        for flag, what, sw, code, vals in ((mixed_seg, "A/B sides", "R2-segregation", "S-2", segs),
+                                           (mixed_grp, "IO groups", "R1-grouping or isolation level", "G-3", groups)):
+            if flag:
+                tq.add(severity="warning", category="rule-conflict", rule_ref=code,
+                       message=f"Cable {cable} carries several {what} {sorted(vals)}; separation is not enforced for it because "
+                               f"{sw} is switched off. It is placed as an unsided/ungrouped cable and each signal keeps its own value",
+                       tags=tags, cables=[cable], sources=srcs[:5],
+                       suggested_action="Re-route one side/group to a separate cable, or switch the rule back on to hold this cable")
         if (segs and any(not s.seg for s in sigs)) or (groups and any(not s.group for s in sigs)):
             tq.add(severity="warning", category="data", rule_ref="G-1/S-1",
                    message=f"Cable {cable}: some signals lack group/segregation; the cable is treated as "

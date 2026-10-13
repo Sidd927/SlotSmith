@@ -25,11 +25,13 @@ def type_code(row: dict) -> str:
         return "DF"
     if tb == "Relay output":
         return "RL"
-    io = (row.get("IO Type") or "").upper()
+    io = row.get("IO Type")
+    io = io.upper() if isinstance(io, str) else ""
     for p in ("AO", "DI", "DO"):
         if io.startswith(p):
             return p
-    return "AI"
+    # Unknown hardware is never tinted as analog input: only a genuine AI family returns "AI".
+    return "AI" if io.startswith("AI") else ""
 
 
 @dataclass(frozen=True)
@@ -53,6 +55,7 @@ class Slot:
     status: str = ""
     tq_ref: str = ""
     source: str = ""
+    reason: str = ""          # "hardware" when a held slot belongs to a signal with no CHARM / terminal-block mapping
 
     @property
     def key(self) -> str:
@@ -64,6 +67,9 @@ class Slot:
             return f"{self.tag}, {self.code}, cable {self.cable} pair {self.pair}"
         if self.kind == "spare":
             return f"Wired spare pair, cable {self.cable} pair {self.pair}"
+        if self.kind == "held" and self.reason == "hardware":
+            return (f"Unresolved hardware: no CHARM or terminal-block mapping for this I/O type "
+                    f"({self.tq_ref or 'technical query'}), cable {self.cable} pair {self.pair}")
         if self.kind == "held":
             return f"Held for a technical query, cable {self.cable} pair {self.pair}"
         return "Free slot"
@@ -108,7 +114,9 @@ def _s(v: Any) -> str:
     return "" if v is None else str(v)
 
 
-def build_cabinet(rows: list[dict], cabinet: str) -> CabinetModel:
+def build_cabinet(rows: list[dict], cabinet: str, hw_pairs: dict | None = None) -> CabinetModel:
+    """`hw_pairs` maps (cable, pair) -> technical-query id for signals with no hardware mapping (rule ref H-*)."""
+    hw_pairs = hw_pairs or {}
     by_cioc: dict[str, CiocModel] = {}
     order: dict[str, int] = {}
     for r in rows:
@@ -124,12 +132,22 @@ def build_cabinet(rows: list[dict], cabinet: str) -> CabinetModel:
         bp = int(r["_bp"])
         n = int(float(r["Slot"]))
         kind_raw = r.get("Row Kind", "")
+        reason, tq_ref = "", ""
         if kind_raw == "Signal":
             kind = "signal"
+            if not type_code(r) or not r.get("CHARM Type") or not r.get("Terminal Block"):
+                kind, reason = "held", "hardware"      # a placed signal without hardware is unresolved, never a normal slot
         elif kind_raw == "Spare pair":
             kind = "spare"
         else:
             kind = "held"
+        if kind == "held":
+            try:
+                key = (_s(r.get("Cable")), int(float(r.get("Pair"))))
+            except (TypeError, ValueError):
+                key = None
+            if key in hw_pairs:
+                reason, tq_ref = "hardware", hw_pairs[key]
         m.slots[(bp, n)] = Slot(
             cioc=cioc, bp=bp, slot=n, kind=kind,
             code=type_code(r) if kind == "signal" else "",
@@ -137,8 +155,8 @@ def build_cabinet(rows: list[dict], cabinet: str) -> CabinetModel:
             pair=_s(r.get("Pair")), group=_s(r.get("IO Group")), seg=_s(r.get("Segregation")),
             charm=_s(r.get("CHARM Type")), terminal_block=_s(r.get("Terminal Block")),
             address=_s(r.get("CHARM Address")), baseplate_name=_s(r.get("Baseplate")),
-            controller=_s(r.get("Controller")), status=_s(r.get("Status")), tq_ref=_s(r.get("TQ Ref")),
-            source=_s(r.get("Source")),
+            controller=_s(r.get("Controller")), status=_s(r.get("Status")),
+            source=_s(r.get("Source")), reason=reason, tq_ref=tq_ref or _s(r.get("TQ Ref")),
         )
     return CabinetModel(cabinet, [by_cioc[c] for c in sorted(by_cioc, key=lambda x: order[x])])
 
