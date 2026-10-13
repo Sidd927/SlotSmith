@@ -35,9 +35,18 @@ def rule_summary(rules: RuleSet) -> list[str]:
     out.append(SEG_WORDS[rules.segregation_level] if rules.enabled("R2-segregation")
                else "A/B separation is switched off.")
     out.append(f"{len(rules.hardware)} rows in the hardware table choose the CHARM and terminal block for each I/O type."
-               if rules.enabled("R6-hardware") else "Hardware matching is switched off.")
+               if rules.enabled("R6-hardware") else "Hardware check is switched off: the independent check skips H-1..6, and signals with no hardware mapping are still held.")
     off = [t.description for t in rules.toggles if not t.enabled and t.id not in
            ("R5-spare", "R1-grouping", "R2-segregation", "R6-hardware")]
     if off:
         out.append("Also switched off: " + "; ".join(off) + ".")
+    return out
+
+
+def skipped_families(rules) -> list[tuple[str, str]]:
+    """(verifier family, controlling switch) for every family the independent check will SKIP under these rules."""
+    from slotsmith.verifier import SWITCH_OF
+    out = [(rid, sw) for rid, sw in SWITCH_OF.items() if not rules.enabled(sw)]
+    if rules.group_isolation_level == "none" and ("G-1", "R1-grouping") not in out:
+        out.append(("G-1", "group isolation level 'none'"))
     return out

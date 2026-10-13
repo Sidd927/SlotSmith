@@ -31,6 +31,12 @@ CHECKS = [
 ]
 
 
+# Report states: PASS (ran, no violation), FAIL (ran, violation), SKIPPED (intentionally not run because the rule that
+# controls it is switched off or inapplicable). A skipped family is never reported as PASS and carries a note.
+PASS, FAIL, SKIPPED = "PASS", "FAIL", "SKIPPED"
+SWITCH_OF = {"S-1": "R2-segregation", "G-1": "R1-grouping", "P-1": "R5-spare", "H-1..6": "R6-hardware"}
+
+
 def _pattern_regex(pat: str, area: str, unit: str) -> re.Pattern:
     out, i = "", 0
     for m in re.finditer(r"\{(\w+)(?::0?(\d+)d)?\}", pat):
@@ -57,6 +63,12 @@ def load_allocation(path: str | Path) -> list[dict]:
 
 def verify(rows: list[dict], mdb: pd.DataFrame, rules: RuleSet, blocked_ok: bool = True) -> list[dict]:
     v: dict[str, list[str]] = defaultdict(list)
+    skipped: dict[str, str] = {}
+    for rid, sw in SWITCH_OF.items():
+        if not rules.enabled(sw):
+            skipped[rid] = f"not run: rule {sw} is switched off"
+    if "G-1" not in skipped and rules.group_isolation_level == "none":
+        skipped["G-1"] = "not run: group isolation level is 'none'"
     n = rules.naming
     rx = {k: _pattern_regex(getattr(n, k), n.area, n.unit) for k in
           ["system_cabinet", "controller", "marshalling_cabinet", "cioc", "baseplate", "charm_slot"]}
@@ -80,6 +92,11 @@ def verify(rows: list[dict], mdb: pd.DataFrame, rules: RuleSet, blocked_ok: bool
                 v["Q-1"].append(f"{t}: allocated but also listed as {sorted({r.get('Status') for r in rs} - {'Allocated'})}")
         elif not all(r.get("TQ Ref") for r in rs):
             v["Q-1"].append(f"{t}: neither allocated nor covered by a TQ")
+    # A placed signal must carry a CHARM and a terminal block whatever the R6 switch says: an assignment without
+    # hardware is unresolved, not allocated (fail closed).
+    for r in placed:
+        if r.get("Row Kind") == "Signal" and (not r.get("CHARM Type") or not r.get("Terminal Block")):
+            v["Q-1"].append(f"{r.get('Tag')}: placed without a CHARM / terminal block (unresolved hardware)")
     untagged = mdb[mdb["tag"].map(lambda x: x is None or str(x).strip() == "")]
     for r in untagged.itertuples(index=False):
         src = f"{r.src_file}:{r.src_sheet}:{r.src_row}"
@@ -234,10 +251,25 @@ def verify(rows: list[dict], mdb: pd.DataFrame, rules: RuleSet, blocked_ok: bool
 
     report = []
     for rid, desc in CHECKS:
+        if rid in skipped:
+            report.append({"Rule": rid, "Check": desc, "Result": SKIPPED, "Violations": 0, "Examples": "", "Note": skipped[rid]})
+            continue
         items = v.get(rid, [])
-        report.append({"Rule": rid, "Check": desc, "Result": "PASS" if not items else "FAIL",
-                       "Violations": len(items), "Examples": " | ".join(items[:5])})
+        report.append({"Rule": rid, "Check": desc, "Result": PASS if not items else FAIL,
+                       "Violations": len(items), "Examples": " | ".join(items[:5]), "Note": ""})
     return report
+
+
+def summarize(report: list[dict]) -> dict:
+    """Counts and overall outcome of a verification report: 'passed' only if every family ran and passed;
+    'failed' if any family found a violation; 'incomplete' if nothing failed but some family was skipped."""
+    passed = sum(1 for c in report if c.get("Result") == PASS)
+    failed = sum(1 for c in report if c.get("Result") == FAIL or c.get("Violations", 0) > 0)
+    skipped = sum(1 for c in report if c.get("Result") == SKIPPED)
+    outcome = "failed" if failed else "incomplete" if skipped else "passed" if report else "missing"
+    return {"total": len(report), "passed": passed, "failed": failed, "skipped": skipped, "outcome": outcome,
+            "skipped_rules": [(c["Rule"], c.get("Note", "")) for c in report if c.get("Result") == SKIPPED],
+            "failed_rules": [c["Rule"] for c in report if c.get("Result") == FAIL or c.get("Violations", 0) > 0]}
 
 
 def total_violations(report: list[dict]) -> int:

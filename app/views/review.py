@@ -9,7 +9,9 @@ from slotsmith.ingest import CANONICAL, REQUIRED
 from app.core.session import get_audit, get_mdb
 from app.core.state import filter_tqs
 from app.ui import shell
-from app.ui.components import banner, page_title, tiles
+from html import escape
+
+from app.ui.components import banner, kv, severity_chip, tiles
 from app.views._common import empty_state
 
 
@@ -28,7 +30,9 @@ def _mapping_rows(cm) -> list[dict]:
 
 def render() -> None:
     s = shell.begin("review")
-    page_title("Review", "Check the data before anything is placed. Nothing on this page changes your dataset.")
+    shell.header("review", "Review the data",
+                 "A pre-flight check before anything is placed. Blockers hold rows back; warnings are noted and do not stop allocation. "
+                 "Nothing on this page changes your dataset.")
     if not s.has_input:
         return empty_state("No dataset loaded", "Load a workbook first.", "Go to Input", "input")
     mdb, audit = get_mdb(st.session_state), get_audit(st.session_state)
@@ -57,10 +61,32 @@ def render() -> None:
             shown = filter_tqs(audit.tqs, sev or "All", q)
             st.caption(f"Showing {len(shown)} of {len(audit.tqs)}.")
             if shown:
-                st.dataframe(pd.DataFrame([{
-                    "ID": t.id, "Severity": t.severity.title(), "Rule": t.rule_ref, "Message": t.message,
-                    "Suggested action": t.suggested_action, "Source rows": ", ".join(t.sources[:3])} for t in shown]),
-                    hide_index=True, width="stretch")
+                df = pd.DataFrame([{
+                    "ID": t.id, "Severity": t.severity.title(), "Rule": t.rule_ref, "What": t.message,
+                    "Affected": f"{len(t.tags)} signal(s)" if t.tags else (f"{len(t.cables)} cable(s)" if t.cables else "-"),
+                    "First source row": (t.sources[0] + (f"  (+{len(t.sources) - 1})" if len(t.sources) > 1 else "")) if t.sources else "-"}
+                    for t in shown])
+                ev = st.dataframe(df, hide_index=True, width="stretch", on_select="rerun",
+                                  selection_mode="single-row", key="rev_tbl", column_config={
+                                      "ID": st.column_config.TextColumn(width="small"),
+                                      "Severity": st.column_config.TextColumn(width="small"),
+                                      "Rule": st.column_config.TextColumn(width="small"),
+                                      "What": st.column_config.TextColumn(width="large"),
+                                      "Affected": st.column_config.TextColumn(width="small"),
+                                      "First source row": st.column_config.TextColumn(width="medium")})
+                rows_sel = ev.selection.rows if ev and ev.selection else []
+                if rows_sel and rows_sel[0] < len(shown):
+                    t = shown[rows_sel[0]]
+                    effect = ("Blocking: the affected rows are held out of the allocation until this is fixed."
+                              if t.severity == "blocking" else "Does not stop allocation; review and decide.")
+                    st.html('<div class="ss-panel rise ss-selpanel"><h4>' + escape(t.id) + " " + severity_chip(t.severity) +
+                            f"</h4><p><b>{escape(t.message)}</b></p>" + kv([
+                                ("Effect", effect), ("Rule", t.rule_ref), ("Category", t.category),
+                                ("Affected tags", ", ".join(t.tags[:12])), ("Affected cables", ", ".join(t.cables[:12])),
+                                ("Source (file · sheet · row)", ", ".join(t.sources[:8])),
+                                ("Recommended fix", t.suggested_action)]) + "</div>")
+                else:
+                    st.caption("Select a row to see the affected rows, why it matters and the recommended fix.")
             else:
                 st.html(banner("info", "No findings match", "Clear the search or choose another severity."))
     with t2:
@@ -72,7 +98,8 @@ def render() -> None:
                 st.caption(f"Headers not used: {', '.join(cm.unused_headers)}")
 
     blocked = audit.readiness_status == "blocked"
-    if st.button("Set up allocation", type="primary", icon=":material/arrow_forward:", disabled=blocked, key="review_next"):
-        st.switch_page(shell.PAGES["allocate"])
-    if blocked:
-        st.caption("Allocation is blocked: no valid cable could be formed from this data.")
+    held = audit.blocking_tqs
+    shell.next_action("review", "Next",
+                      "Set the rules and run the allocation" + (f" ({held} row issue(s) will be held as queries)" if held else ""),
+                      "Set up allocation", "allocate", disabled=blocked,
+                      why_disabled="Allocation is blocked: no valid cable could be formed from this data.")

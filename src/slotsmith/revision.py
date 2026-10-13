@@ -71,9 +71,16 @@ def _prev_layout(rows: list[dict], rules: RuleSet):
         q.occ.setdefault(bp, [None] * rules.charms_per_baseplate)
         pair = int(float(r["Pair"]))
         c = cables.setdefault(r["Cable"], {"cab": cab, "no": no, "size": int(float(r["Cable Size"])),
-                                           "group": r.get("IO Group") or None, "seg": r.get("Segregation") or None,
-                                           "lin": {}})
+                                           "group": None, "seg": None, "lin": {}, "_g": set(), "_s": set()})
         c["lin"][pair] = (bp - 1) * rules.charms_per_baseplate + (slot - 1)
+        if r.get("IO Group"):
+            c["_g"].add(r["IO Group"])
+        if r.get("Segregation"):
+            c["_s"].add(r["Segregation"])
+    for c in cables.values():   # rows carry per-signal values; a cable has one side/group only if all its rows agree
+        gs, ss = c.pop("_g"), c.pop("_s")
+        c["group"] = next(iter(gs)) if len(gs) == 1 else None
+        c["seg"] = next(iter(ss)) if len(ss) == 1 else None
     return cabs, cables
 
 
